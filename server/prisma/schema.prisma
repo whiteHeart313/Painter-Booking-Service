@@ -1,0 +1,143 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id           String   @id @default(cuid())
+    firstname    String
+    lastname     String
+    email        String   @unique
+    password     String
+    isVerified   Boolean  @default(false)
+    roleId       String
+    address      String?
+    phone        String?
+    profileImage String?
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    role UserRole @relation(fields: [roleId], references: [id])
+
+    // User can make booking requests
+    bookingRequests BookingRequest[]
+
+    // User can be a painter with availability
+    painterProfile PainterProfile?
+
+    @@map("users")
+}
+
+model UserRole {
+    id          String   @id @default(cuid())
+    name        String   @unique // USER, PAINTER
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    users User[]
+
+    @@map("user_roles")
+}
+
+model PainterProfile {
+    id           String   @id @default(cuid())
+    userId       String   @unique
+    rating       Float    @default(0.0)
+    totalRatings Int      @default(0)
+    experience   String?
+    specialties  String[] // Array of painting specialties
+    hourlyRate   Float?
+    isActive     Boolean  @default(true)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // Painter's availability slots
+    availabilities Availability[]
+
+    // Bookings assigned to this painter
+    bookings Booking[]
+
+    @@map("painter_profiles")
+}
+
+model Availability {
+    id        String   @id @default(cuid())
+    painterId String
+    startTime DateTime
+    endTime   DateTime
+    isBooked  Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    painter PainterProfile @relation(fields: [painterId], references: [id], onDelete: Cascade)
+
+    @@map("availabilities")
+}
+
+model BookingRequest {
+    id             String        @id @default(cuid())
+    userId         String
+    requestedStart DateTime
+    requestedEnd   DateTime
+    description    String?
+    address        String
+    estimatedHours Int?
+    status         BookingStatus @default(PENDING)
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // If request is accepted, it becomes a booking
+    booking Booking?
+
+    @@map("booking_requests")
+}
+
+model Booking {
+    id               String        @id @default(cuid())
+    bookingRequestId String        @unique
+    painterId        String
+    scheduledStart   DateTime
+    scheduledEnd     DateTime
+    actualStart      DateTime?
+    actualEnd        DateTime?
+    status           BookingStatus @default(CONFIRMED)
+    totalCost        Float?
+    notes            String?
+    createdAt        DateTime      @default(now())
+    updatedAt        DateTime      @updatedAt
+
+    bookingRequest BookingRequest @relation(fields: [bookingRequestId], references: [id], onDelete: Cascade)
+    painter        PainterProfile @relation(fields: [painterId], references: [id])
+
+    @@map("bookings")
+}
+
+enum BookingStatus {
+    PENDING
+    CONFIRMED
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+}
+
+// Audit log for tracking system events
+model AuditLog {
+    id        String   @id @default(cuid())
+    action    String
+    entity    String
+    entityId  String
+    userId    String?
+    details   Json?
+    createdAt DateTime @default(now())
+
+    @@map("audit_logs")
+}
