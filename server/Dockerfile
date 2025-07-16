@@ -13,11 +13,11 @@ RUN yarn install
 COPY . .
 
 # Generate Prisma client
-RUN npx prisma generate
+RUN yarn prisma generate
 
 # Build the application
-RUN npm run build
+RUN yarn build
 
 EXPOSE 3000
 
-CMD ["npm", "run", "serve"]
+CMD ["yarn", "serve"]
