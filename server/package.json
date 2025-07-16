@@ -17,6 +17,7 @@
     "clean": "rimraf dist node_modules yarn.lock",
     "reset": "yarn clean && yarn install",
     "test": "echo \"No tests specified\" && exit 0",
+    "test:api": "ts-node -e \"require('./test-api').main()\"",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
