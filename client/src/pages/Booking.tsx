@@ -1,12 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { XMarkIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
-
-interface RoomSelection {
-  type: string;
-  count: number;
-  pricePerRoom: number;
-}
+import { useBooking } from '../hooks/useBooking';
 
 interface ServiceType {
   id: string;
@@ -17,15 +11,48 @@ interface ServiceType {
 }
 
 export default function Booking() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [selectedRooms, setSelectedRooms] = useState<RoomSelection[]>([]);
-  const [selectedService, setSelectedService] = useState<ServiceType | null>(null);
-  const [address, setAddress] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [isCompleted, setIsCompleted] = useState(false);
+  const {
+    // State
+    currentStep,
+    selectedRooms,
+    selectedService,
+    address,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    isCompleted,
+    isSubmitting,
+    bookingId,
+    error,
+    
+    // Setters
+    setAddress,
+    setStartDate,
+    setStartTime,
+    setEndDate,
+    setEndTime,
+    
+    // Room management
+    handleRoomTypeSelect,
+    updateRoomCount,
+    removeRoom,
+    handleServiceSelect,
+    
+    // Calculations
+    calculateTotal,
+    getTotalRooms,
+    getTotalDurationHours,
+    
+    // Navigation
+    handleNext,
+    handleBack,
+    canProceed,
+    getStepTitle,
+    
+    // Validation
+    updateEndDateTime,
+  } = useBooking();
 
   const roomTypes = [
     'Studio',
@@ -46,141 +73,6 @@ export default function Booking() {
     { id: 'moving', name: 'Moving In/Out', duration: '4-5 hours', pricePerRoom: 160 , durationInHours: 5},
     { id: 'construction', name: 'Post Construction', duration: '4.5-5 hours', pricePerRoom: 200 , durationInHours: 5}
   ];
-
-  const handleRoomTypeSelect = (roomType: string) => {
-    const exists = selectedRooms.find(room => room.type === roomType);
-    if (!exists) {
-      setSelectedRooms([...selectedRooms, { 
-        type: roomType, 
-        count: 1, 
-        pricePerRoom: selectedService?.pricePerRoom || 80 
-      }]);
-    }
-  };
-
-  const updateRoomCount = (roomType: string, increment: boolean) => {
-    setSelectedRooms(prev => 
-      prev.map(room => {
-        if (room.type === roomType) {
-          const newCount = increment ? room.count + 1 : Math.max(1, room.count - 1);
-          return { ...room, count: newCount };
-        }
-        return room;
-      })
-    );
-  };
-
-  const removeRoom = (roomType: string) => {
-    setSelectedRooms(prev => prev.filter(room => room.type !== roomType));
-  };
-
-  const handleServiceSelect = (service: ServiceType) => {
-    setSelectedService(service);
-    // Update prices for existing rooms
-    setSelectedRooms(prev => 
-      prev.map(room => ({ ...room, pricePerRoom: service.pricePerRoom }))
-    );
-    // Update end date/time when service changes
-    if (startDate && startTime) {
-      updateEndDateTime();
-    }
-  };
-
-  // Auto-update end date/time when start date/time or service changes
-  useEffect(() => {
-    if (startDate && startTime && selectedService) {
-      updateEndDateTime();
-    }
-  }, [startDate, startTime, selectedService, selectedRooms]);
-
-  const calculateTotal = () => {
-    return selectedRooms.reduce((total, room) => total + (room.count * room.pricePerRoom), 0);
-  };
-
-  const getTotalRooms = () => {
-    return selectedRooms.reduce((total, room) => total + room.count, 0);
-  };
-
-  const getTotalDurationHours = () => {
-    if (!selectedService || !selectedService.durationInHours) return 0;
-    return selectedService.durationInHours * getTotalRooms();
-  };
-
-  const validateDateTime = () => {
-    if (!startDate || !startTime || !endDate || !endTime) return false;
-    
-    const startDateTime = new Date(`${startDate}T${startTime}`);
-    const endDateTime = new Date(`${endDate}T${endTime}`);
-    const now = new Date();
-    
-    // Check if start date is not in the past
-    if (startDateTime <= now) return false;
-    
-    // Check if end date is after start date
-    if (endDateTime <= startDateTime) return false;
-    
-    // Check if the duration is at least the required service duration
-    const durationHours = (endDateTime.getTime() - startDateTime.getTime()) / (1000 * 60 * 60);
-    const requiredDuration = getTotalDurationHours();
-    
-    return durationHours >= requiredDuration;
-  };
-
-  const updateEndDateTime = () => {
-    if (startDate && startTime && selectedService?.durationInHours) {
-      const startDateTime = new Date(`${startDate}T${startTime}`);
-      const totalDurationMs = getTotalDurationHours() * 60 * 60 * 1000;
-      const endDateTime = new Date(startDateTime.getTime() + totalDurationMs);
-      
-      setEndDate(endDateTime.toISOString().split('T')[0]);
-      setEndTime(endDateTime.toTimeString().slice(0, 5));
-    }
-  };
-
-  const handleNext = () => {
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
-    } else if (currentStep === 4) {
-      // Complete the booking
-      setIsCompleted(true);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1:
-        return selectedRooms.length > 0;
-      case 2:
-        return selectedService !== null;
-      case 3:
-        return address.trim().length > 10; // Ensure reasonable address length
-      case 4:
-        return validateDateTime();
-      default:
-        return false;
-    }
-  };
-
-  const getStepTitle = () => {
-    switch (currentStep) {
-      case 1:
-        return 'SELECT ROOM TYPES & QUANTITIES';
-      case 2:
-        return 'CLEAN TYPE';
-      case 3:
-        return 'ADDRESS';
-      case 4:
-        return 'SCHEDULE DATE & TIME';
-      default:
-        return '';
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -239,9 +131,14 @@ export default function Booking() {
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
                 Booking Confirmed!
               </h1>
-              <p className="text-gray-600 mb-8">
+              <p className="text-gray-600 mb-4">
                 Thank you for your booking. We'll contact you soon to confirm the details.
               </p>
+              {bookingId && (
+                <p className="text-sm text-gray-500 mb-8">
+                  Booking ID: <span className="font-medium">{bookingId}</span>
+                </p>
+              )}
               
               {/* Final Summary */}
               <div className="bg-gray-50 rounded-lg p-6 mb-8 text-left">
@@ -564,6 +461,13 @@ export default function Booking() {
             </div>
           )}
 
+          {/* Error Display */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          )}
+
           {/* Navigation Buttons */}
           {!isCompleted && (
             <div className="flex justify-between">
@@ -576,10 +480,12 @@ export default function Booking() {
               </button>
               <button
                 onClick={handleNext}
-                disabled={!canProceed()}
+                disabled={!canProceed() || isSubmitting}
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
               >
-                {currentStep === 4 ? 'Complete' : 'Next'}
+                {currentStep === 4 ? (
+                  isSubmitting ? 'Submitting...' : 'Complete Booking'
+                ) : 'Next'}
               </button>
             </div>
           )}

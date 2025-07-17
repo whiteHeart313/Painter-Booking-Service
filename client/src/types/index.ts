@@ -8,6 +8,37 @@ export interface PaintingService {
   category: 'interior' | 'exterior' | 'commercial' | 'residential';
 }
 
+export interface CleaningService {
+  id: string;
+  name: string;
+  duration: string;
+  durationInHours: number;
+  pricePerRoom: number;
+}
+
+export interface RoomSelection {
+  type: string;
+  count: number;
+  pricePerRoom: number;
+}
+
+export interface CleaningBookingRequest {
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  selectedRooms: RoomSelection[];
+  selectedService: CleaningService;
+  address: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  totalCost: number;
+  totalRooms: number;
+  totalDuration: number;
+  additionalNotes?: string;
+}
+
 export interface BookingRequest {
   customerName: string;
   customerEmail: string;
@@ -26,6 +57,26 @@ export interface Booking {
   service: PaintingService;
   preferredDate: string;
   address: string;
+  additionalNotes?: string;
+  status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
+  createdAt: string;
+}
+
+export interface CleaningBooking {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  selectedRooms: RoomSelection[];
+  selectedService: CleaningService;
+  address: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  totalCost: number;
+  totalRooms: number;
+  totalDuration: number;
   additionalNotes?: string;
   status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
   createdAt: string;
