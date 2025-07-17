@@ -7,11 +7,35 @@ import {
   CheckCircleIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
+import DropdownMenu from '../components/DropdownMenu';
 
 export default function Home() {
   const [selectedRooms, setSelectedRooms] = useState('Two');
-  const [selectedService, setSelectedService] = useState('Interior');
+  const [selectedService, setSelectedService] = useState('Bathroom');
   const [selectedPackage, setSelectedPackage] = useState('Standard');
+
+  // Dropdown options
+  const roomOptions = [
+    { value: 'One', label: 'One' },
+    { value: 'Two', label: 'Two' },
+    { value: 'Three', label: 'Three' },
+    { value: 'Four', label: 'Four' },
+    { value: 'Five+', label: 'Five+' },
+  ];
+
+  const serviceOptions = [
+    { value: 'Bathroom', label: 'Bathroom' },
+    { value: 'Bedroom', label: 'Bedroom' },
+    { value: 'Kitchen', label: 'Kitchen' },
+    { value: 'Living Room', label: 'Living Room' },
+    { value: 'Office', label: 'Office' },
+  ];
+
+  const packageOptions = [
+    { value: 'Basic', label: 'Basic' },
+    { value: 'Standard', label: 'Standard' },
+    { value: 'Premium', label: 'Premium' },
+  ];
 
   const features = [
     {
@@ -71,63 +95,37 @@ export default function Home() {
               </h1>
               
               {/* Service Selection */}
-              <div className="bg-white rounded-lg shadow-lg p-6 mb-8 max-w-md mx-auto lg:mx-0">
-                <div className="grid grid-cols-1 gap-4">
+              <div className="bg-white rounded-lg shadow-lg p-6 mb-8 max-w-2xl mx-auto lg:mx-0">
+                <div className="grid grid-cols-3 gap-4">
                   {/* Rooms Selector */}
-                  <div className="relative">
-                    <select
-                      value={selectedRooms}
-                      onChange={(e) => setSelectedRooms(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                    >
-                      <option value="One">One</option>
-                      <option value="Two">Two</option>
-                      <option value="Three">Three</option>
-                      <option value="Four">Four</option>
-                      <option value="Five+">Five+</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                  <DropdownMenu
+                    options={roomOptions}
+                    selectedValue={selectedRooms}
+                    onSelect={setSelectedRooms}
+                    placeholder="Select rooms"
+                    buttonClassName="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none bg-white text-gray-900 font-normal text-left justify-between inline-flex items-center"
+                    menuClassName="w-full"
+                  />
 
                   {/* Service Type Selector */}
-                  <div className="relative">
-                    <select
-                      value={selectedService}
-                      onChange={(e) => setSelectedService(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                    >
-                      <option value="Interior">Interior</option>
-                      <option value="Exterior">Exterior</option>
-                      <option value="Both">Both</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                  <DropdownMenu
+                    options={serviceOptions}
+                    selectedValue={selectedService}
+                    onSelect={setSelectedService}
+                    placeholder="Select service"
+                    buttonClassName="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none bg-white text-gray-900 font-normal text-left justify-between inline-flex items-center"
+                    menuClassName="w-full"
+                  />
 
                   {/* Package Selector */}
-                  <div className="relative">
-                    <select
-                      value={selectedPackage}
-                      onChange={(e) => setSelectedPackage(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                    >
-                      <option value="Basic">Basic</option>
-                      <option value="Standard">Standard</option>
-                      <option value="Premium">Premium</option>
-                    </select>
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
+                  <DropdownMenu
+                    options={packageOptions}
+                    selectedValue={selectedPackage}
+                    onSelect={setSelectedPackage}
+                    placeholder="Select package"
+                    buttonClassName="w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none appearance-none bg-white text-gray-900 font-normal text-left justify-between inline-flex items-center"
+                    menuClassName="w-full"
+                  />
                 </div>
               </div>
 
