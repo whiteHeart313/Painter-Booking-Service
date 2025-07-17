@@ -1,14 +1,7 @@
 import { Link } from 'react-router-dom';
 import { XMarkIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { useBooking } from '../hooks/useBooking';
-
-interface ServiceType {
-  id: string;
-  name: string;
-  duration: string;
-  durationInHours?: number; // Optional for future use
-  pricePerRoom: number;
-}
+import { ROOM_TYPES, SERVICE_TYPES } from '../constants/bookingConstants';
 
 export default function Booking() {
   const {
@@ -53,26 +46,6 @@ export default function Booking() {
     // Validation
     updateEndDateTime,
   } = useBooking();
-
-  const roomTypes = [
-    'Studio',
-    'Bedroom',
-    'Bathroom',
-    'Kitchen',
-    'Living Room',
-    'Dining Room',
-    'Office',
-    'Laundry Room',
-    'Garage',
-    'Basement'
-  ];
-
-  const serviceTypes: ServiceType[] = [
-    { id: 'standard', name: 'Standard', duration: '2 hours', pricePerRoom: 80 , durationInHours: 2},
-    { id: 'deep', name: 'Deep Clean', duration: '2.5-3 hours', pricePerRoom: 120  , durationInHours: 3},
-    { id: 'moving', name: 'Moving In/Out', duration: '4-5 hours', pricePerRoom: 160 , durationInHours: 5},
-    { id: 'construction', name: 'Post Construction', duration: '4.5-5 hours', pricePerRoom: 200 , durationInHours: 5}
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -241,7 +214,7 @@ export default function Booking() {
             {currentStep === 1 && (
               <div className="space-y-6">
                 <div className="grid grid-cols-5 gap-3">
-                  {roomTypes.map((roomType) => (
+                  {ROOM_TYPES.map((roomType) => (
                     <button
                       key={roomType}
                       onClick={() => handleRoomTypeSelect(roomType)}
@@ -299,7 +272,7 @@ export default function Booking() {
             {/* Step 2: Service Type Selection */}
             {currentStep === 2 && (
               <div className="grid grid-cols-4 gap-4">
-                {serviceTypes.map((service) => (
+                {SERVICE_TYPES.map((service) => (
                   <button
                     key={service.id}
                     onClick={() => handleServiceSelect(service)}

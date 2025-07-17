@@ -1,18 +1,11 @@
 import { useState, useEffect } from 'react';
 import { BookingService } from '../services/bookingService';
 import type { CleaningBookingRequest } from '../types';
+import type { ServiceType } from '../constants/bookingConstants';
 
 interface RoomSelection {
   type: string;
   count: number;
-  pricePerRoom: number;
-}
-
-interface ServiceType {
-  id: string;
-  name: string;
-  duration: string;
-  durationInHours?: number;
   pricePerRoom: number;
 }
 
