@@ -24,10 +24,7 @@ export class AvailabilityModel extends BaseModel {
     return await this.prisma.availability.findFirst({
       where: {
         painterId,
-        AND: [
-          { startTime: { lt: endTime } },
-          { endTime: { gt: startTime } },
-        ],
+        AND: [{ startTime: { lt: endTime } }, { endTime: { gt: startTime } }],
       },
     });
   }

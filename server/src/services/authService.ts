@@ -9,7 +9,9 @@ export class AuthService {
     private userRoleModel: UserRoleModel
   ) {}
 
-  async login(data: AuthRequest): Promise<ServiceResult<{ user: any; token: string }>> {
+  async login(
+    data: AuthRequest
+  ): Promise<ServiceResult<{ user: any; token: string }>> {
     try {
       const user = await this.userModel.findByEmail(data.email);
 
@@ -20,7 +22,10 @@ export class AuthService {
         };
       }
 
-      const isPasswordValid = await bcrypt.compare(data.password, user.password);
+      const isPasswordValid = await bcrypt.compare(
+        data.password,
+        user.password
+      );
       if (!isPasswordValid) {
         return {
           success: false,
@@ -29,10 +34,10 @@ export class AuthService {
       }
 
       const token = generateToken(user);
-      
+
       // Remove password from response
       const { password, ...userWithoutPassword } = user;
-      
+
       return {
         success: true,
         data: {
@@ -48,7 +53,9 @@ export class AuthService {
     }
   }
 
-  async register(data: RegisterRequest): Promise<ServiceResult<{ user: any; token: string }>> {
+  async register(
+    data: RegisterRequest
+  ): Promise<ServiceResult<{ user: any; token: string }>> {
     try {
       const existingUser = await this.userModel.findByEmail(data.email);
 
@@ -67,10 +74,10 @@ export class AuthService {
       });
 
       const token = generateToken(user);
-      
+
       // Remove password from response
       const { password, ...userWithoutPassword } = user;
-      
+
       return {
         success: true,
         data: {
@@ -99,7 +106,7 @@ export class AuthService {
 
       // Remove password from response
       const { password, ...userWithoutPassword } = user;
-      
+
       return {
         success: true,
         data: userWithoutPassword,
@@ -107,7 +114,8 @@ export class AuthService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get user profile',
+        error:
+          error instanceof Error ? error.message : 'Failed to get user profile',
       };
     }
   }

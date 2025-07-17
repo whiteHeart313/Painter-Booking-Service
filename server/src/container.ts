@@ -9,7 +9,11 @@ import { BookingHandler } from './handlers/BookingHandler';
 // Services with dependency injection
 export const authService = new AuthService(models.user, models.userRole);
 export const availabilityService = new AvailabilityService(models.availability);
-export const bookingService = new BookingService(models.booking, models.availability, availabilityService);
+export const bookingService = new BookingService(
+  models.booking,
+  models.availability,
+  availabilityService
+);
 
 // Handlers with dependency injection
 export const authHandler = new AuthHandler(authService);

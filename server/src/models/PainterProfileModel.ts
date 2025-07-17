@@ -39,7 +39,8 @@ export class PainterProfileModel extends BaseModel {
         rating: profileData.rating || 0.0,
         totalRatings: profileData.totalRatings || 0,
         specialties: profileData.specialties || [],
-        isActive: profileData.isActive !== undefined ? profileData.isActive : true,
+        isActive:
+          profileData.isActive !== undefined ? profileData.isActive : true,
       },
       include: {
         user: true,
@@ -47,14 +48,17 @@ export class PainterProfileModel extends BaseModel {
     });
   }
 
-  async update(id: string, profileData: Partial<{
-    rating: number;
-    totalRatings: number;
-    experience: string;
-    specialties: string[];
-    hourlyRate: number;
-    isActive: boolean;
-  }>) {
+  async update(
+    id: string,
+    profileData: Partial<{
+      rating: number;
+      totalRatings: number;
+      experience: string;
+      specialties: string[];
+      hourlyRate: number;
+      isActive: boolean;
+    }>
+  ) {
     return await this.prisma.painterProfile.update({
       where: { id },
       data: profileData,
@@ -83,7 +87,8 @@ export class PainterProfileModel extends BaseModel {
     }
 
     const totalRatings = profile.totalRatings + 1;
-    const rating = ((profile.rating * profile.totalRatings) + newRating) / totalRatings;
+    const rating =
+      (profile.rating * profile.totalRatings + newRating) / totalRatings;
 
     return await this.prisma.painterProfile.update({
       where: { id },

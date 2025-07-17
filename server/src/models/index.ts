@@ -22,5 +22,11 @@ export const models = {
 };
 
 // Export model classes for type checking
-export { UserModel, UserRoleModel, AvailabilityModel, BookingModel, PainterProfileModel };
+export {
+  UserModel,
+  UserRoleModel,
+  AvailabilityModel,
+  BookingModel,
+  PainterProfileModel,
+};
 export { prismaClient };

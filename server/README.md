@@ -31,16 +31,19 @@ A comprehensive backend system for a painting service scheduling application bui
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/auth/login` - User login
 - `POST /api/auth/register` - User registration
 - `GET /api/auth/profile` - Get user profile
 
 ### Availability (Painters only)
+
 - `POST /api/availability` - Create availability slot
 - `GET /api/availability/me` - Get painter's availability
 - `DELETE /api/availability/:id` - Delete availability slot
 
 ### Booking (Users only)
+
 - `POST /api/booking/booking-request` - Create booking request
 - `GET /api/booking/my-bookings` - Get user's bookings
 
@@ -99,6 +102,7 @@ docker-compose up -d
 ```
 
 This will start:
+
 - PostgreSQL database on port 5432
 - Redis for caching on port 6379
 - API server on port 3000
@@ -106,6 +110,7 @@ This will start:
 ### Running Locally
 
 1. Install dependencies:
+
 ```bash
 yarn install
 ```
@@ -113,16 +118,19 @@ yarn install
 2. Set up your database and update the `.env` file
 
 3. Run database migrations:
+
 ```bash
 yarn migrate
 ```
 
 4. Seed the database:
+
 ```bash
 yarn db:seed
 ```
 
 5. Start the development server:
+
 ```bash
 yarn dev
 ```
@@ -231,6 +239,7 @@ The application uses Winston for comprehensive logging:
 - Business logic events
 
 Logs are stored in:
+
 - `logs/combined.log` - All logs
 - `logs/error.log` - Error logs only
 - Console output for development
@@ -248,6 +257,7 @@ Logs are stored in:
 ## Testing
 
 Run tests with:
+
 ```bash
 yarn test
 ```

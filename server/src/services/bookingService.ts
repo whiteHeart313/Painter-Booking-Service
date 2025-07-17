@@ -1,4 +1,11 @@
-import { CreateBookingRequest, BookingResponse, BookingStatus, PainterSelectionResult, AlternativeSlot, ServiceResult } from '../../types';
+import {
+  CreateBookingRequest,
+  BookingResponse,
+  BookingStatus,
+  PainterSelectionResult,
+  AlternativeSlot,
+  ServiceResult,
+} from '../../types';
 import { AvailabilityService } from './availabilityService';
 import { BookingModel, AvailabilityModel } from '../models';
 
@@ -9,7 +16,10 @@ export class BookingService {
     private availabilityService: AvailabilityService
   ) {}
 
-  async createBookingRequest(userId: string, data: CreateBookingRequest): Promise<ServiceResult<any>> {
+  async createBookingRequest(
+    userId: string,
+    data: CreateBookingRequest
+  ): Promise<ServiceResult<any>> {
     try {
       const requestedStart = new Date(data.requestedStart);
       const requestedEnd = new Date(data.requestedEnd);
@@ -40,7 +50,10 @@ export class BookingService {
       });
 
       // Try to find and assign a painter
-      const assignment = await this.findBestPainter(requestedStart, requestedEnd);
+      const assignment = await this.findBestPainter(
+        requestedStart,
+        requestedEnd
+      );
 
       if (assignment.success && assignment.data) {
         // Create booking with assigned painter
@@ -59,7 +72,10 @@ export class BookingService {
         );
 
         // Update booking request status
-        await this.bookingModel.updateBookingRequestStatus(bookingRequest.id, BookingStatus.CONFIRMED);
+        await this.bookingModel.updateBookingRequestStatus(
+          bookingRequest.id,
+          BookingStatus.CONFIRMED
+        );
 
         return {
           success: true,
@@ -67,8 +83,11 @@ export class BookingService {
         };
       } else {
         // No painter available, suggest alternatives
-        const alternatives = await this.findAlternativeSlots(requestedStart, requestedEnd);
-        
+        const alternatives = await this.findAlternativeSlots(
+          requestedStart,
+          requestedEnd
+        );
+
         return {
           success: false,
           error: 'No painters available for the requested time',
@@ -81,16 +100,24 @@ export class BookingService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create booking request',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to create booking request',
       };
     }
   }
 
-  async getUserBookings(userId: string): Promise<ServiceResult<BookingResponse[]>> {
+  async getUserBookings(
+    userId: string
+  ): Promise<ServiceResult<BookingResponse[]>> {
     try {
-      const bookingRequests = await this.bookingModel.findBookingRequestsByUserId(userId);
-      const bookings = bookingRequests.map(req => this.formatBookingResponse(req, req.booking));
-      
+      const bookingRequests =
+        await this.bookingModel.findBookingRequestsByUserId(userId);
+      const bookings = bookingRequests.map((req) =>
+        this.formatBookingResponse(req, req.booking)
+      );
+
       return {
         success: true,
         data: bookings,
@@ -98,16 +125,27 @@ export class BookingService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to get user bookings',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to get user bookings',
       };
     }
   }
 
-  private async findBestPainter(startTime: Date, endTime: Date): Promise<ServiceResult<PainterSelectionResult>> {
+  private async findBestPainter(
+    startTime: Date,
+    endTime: Date
+  ): Promise<ServiceResult<PainterSelectionResult>> {
     try {
-      const availabilitiesResult = await this.availabilityService.getAvailablePainters(startTime, endTime);
-      
-      if (!availabilitiesResult.success || !availabilitiesResult.data || availabilitiesResult.data.length === 0) {
+      const availabilitiesResult =
+        await this.availabilityService.getAvailablePainters(startTime, endTime);
+
+      if (
+        !availabilitiesResult.success ||
+        !availabilitiesResult.data ||
+        availabilitiesResult.data.length === 0
+      ) {
         return {
           success: false,
           error: 'No painters available',
@@ -115,10 +153,11 @@ export class BookingService {
       }
 
       // Score painters based on rating and availability
-      const scoredPainters = availabilitiesResult.data.map(availability => {
+      const scoredPainters = availabilitiesResult.data.map((availability) => {
         const painter = availability.painter;
         const ratingScore = painter.rating * 20; // Rating out of 5, multiply by 20 for 100-point scale
-        const experienceScore = painter.totalRatings > 0 ? Math.min(painter.totalRatings * 2, 40) : 0;
+        const experienceScore =
+          painter.totalRatings > 0 ? Math.min(painter.totalRatings * 2, 40) : 0;
         const availabilityScore = 40; // Base score for being available
 
         const totalScore = ratingScore + experienceScore + availabilityScore;
@@ -132,7 +171,7 @@ export class BookingService {
 
       // Sort by score descending and return the best painter
       scoredPainters.sort((a, b) => b.score - a.score);
-      
+
       return {
         success: true,
         data: scoredPainters[0],
@@ -140,27 +179,43 @@ export class BookingService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to find best painter',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to find best painter',
       };
     }
   }
 
-  private async findAlternativeSlots(requestedStart: Date, requestedEnd: Date): Promise<ServiceResult<AlternativeSlot[]>> {
+  private async findAlternativeSlots(
+    requestedStart: Date,
+    requestedEnd: Date
+  ): Promise<ServiceResult<AlternativeSlot[]>> {
     try {
       const duration = requestedEnd.getTime() - requestedStart.getTime();
-      const searchStart = new Date(requestedStart.getTime() - 24 * 60 * 60 * 1000); // 1 day before
-      const searchEnd = new Date(requestedStart.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days after
+      const searchStart = new Date(
+        requestedStart.getTime() - 24 * 60 * 60 * 1000
+      ); // 1 day before
+      const searchEnd = new Date(
+        requestedStart.getTime() + 7 * 24 * 60 * 60 * 1000
+      ); // 7 days after
 
-      const availabilities = await this.availabilityModel.findForAlternatives(searchStart, searchEnd);
+      const availabilities = await this.availabilityModel.findForAlternatives(
+        searchStart,
+        searchEnd
+      );
       const alternatives: AlternativeSlot[] = [];
 
       for (const availability of availabilities) {
-        const availableDuration = availability.endTime.getTime() - availability.startTime.getTime();
-        
+        const availableDuration =
+          availability.endTime.getTime() - availability.startTime.getTime();
+
         // Check if the availability slot is long enough
         if (availableDuration >= duration) {
-          const timeDifference = Math.abs(availability.startTime.getTime() - requestedStart.getTime());
-          
+          const timeDifference = Math.abs(
+            availability.startTime.getTime() - requestedStart.getTime()
+          );
+
           alternatives.push({
             startTime: availability.startTime,
             endTime: new Date(availability.startTime.getTime() + duration),
@@ -172,7 +227,7 @@ export class BookingService {
 
       // Sort by time difference (closest to requested time first)
       alternatives.sort((a, b) => a.timeDifference - b.timeDifference);
-      
+
       return {
         success: true,
         data: alternatives.slice(0, 5), // Return top 5 alternatives
@@ -180,12 +235,18 @@ export class BookingService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to find alternative slots',
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to find alternative slots',
       };
     }
   }
 
-  private formatBookingResponse(bookingRequest: any, booking?: any): BookingResponse {
+  private formatBookingResponse(
+    bookingRequest: any,
+    booking?: any
+  ): BookingResponse {
     return {
       id: bookingRequest.id,
       requestedStart: bookingRequest.requestedStart.toISOString(),
@@ -193,12 +254,14 @@ export class BookingService {
       scheduledStart: booking?.scheduledStart?.toISOString(),
       scheduledEnd: booking?.scheduledEnd?.toISOString(),
       status: bookingRequest.status,
-      painter: booking?.painter ? {
-        id: booking.painter.id,
-        firstname: booking.painter.user.firstname,
-        lastname: booking.painter.user.lastname,
-        rating: booking.painter.rating,
-      } : undefined,
+      painter: booking?.painter
+        ? {
+            id: booking.painter.id,
+            firstname: booking.painter.user.firstname,
+            lastname: booking.painter.user.lastname,
+            rating: booking.painter.rating,
+          }
+        : undefined,
       address: bookingRequest.address,
       description: bookingRequest.description,
       estimatedHours: bookingRequest.estimatedHours,

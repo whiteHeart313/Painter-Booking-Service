@@ -22,10 +22,7 @@ export class UserRoleModel extends BaseModel {
     return await this.prisma.userRole.findMany();
   }
 
-  async create(roleData: {
-    name: string;
-    description?: string;
-  }) {
+  async create(roleData: { name: string; description?: string }) {
     return await this.prisma.userRole.create({
       data: roleData,
     });

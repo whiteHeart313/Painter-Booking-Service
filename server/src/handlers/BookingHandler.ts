@@ -17,7 +17,7 @@ export class BookingHandler extends BaseHandler {
         res.status(400).json({
           success: false,
           error: 'Validation error',
-          message: error.details.map(detail => detail.message).join(', '),
+          message: error.details.map((detail) => detail.message).join(', '),
         });
         return;
       }
@@ -33,8 +33,11 @@ export class BookingHandler extends BaseHandler {
 
       const bookingData: CreateBookingRequest = req.body;
       const userId = req.user.id;
-      
-      const result = await this.bookingService.createBookingRequest(userId, bookingData);
+
+      const result = await this.bookingService.createBookingRequest(
+        userId,
+        bookingData
+      );
       this.sendResponse(res, result);
     } catch (error) {
       this.handleError(res, error as Error);

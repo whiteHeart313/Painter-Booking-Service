@@ -17,7 +17,7 @@ export class AuthHandler extends BaseHandler {
         res.status(400).json({
           success: false,
           error: 'Validation error',
-          message: error.details.map(detail => detail.message).join(', '),
+          message: error.details.map((detail) => detail.message).join(', '),
         });
         return;
       }
@@ -38,7 +38,7 @@ export class AuthHandler extends BaseHandler {
         res.status(400).json({
           success: false,
           error: 'Validation error',
-          message: error.details.map(detail => detail.message).join(', '),
+          message: error.details.map((detail) => detail.message).join(', '),
         });
         return;
       }

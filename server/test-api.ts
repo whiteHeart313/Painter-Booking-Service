@@ -27,7 +27,7 @@ async function getRoleIds() {
       email: 'john.doe@example.com',
       password: 'password123',
     });
-    
+
     const painterLogin = await axios.post(`${API_BASE_URL}/auth/login`, {
       email: 'jane.painter@example.com',
       password: 'password123',
@@ -38,7 +38,10 @@ async function getRoleIds() {
       painterRoleId: painterLogin.data.data.user.roleId,
     };
   } catch (error: any) {
-    console.error('Failed to get role IDs:', error.response?.data || error.message);
+    console.error(
+      'Failed to get role IDs:',
+      error.response?.data || error.message
+    );
     throw new Error('Could not retrieve role IDs from seeded data');
   }
 }
@@ -71,7 +74,7 @@ async function testAPI() {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(9, 0, 0, 0);
-    
+
     const endTime = new Date(tomorrow);
     endTime.setHours(17, 0, 0, 0);
 
@@ -98,12 +101,15 @@ async function testAPI() {
         },
       }
     );
-    console.log('✅ Retrieved painter availability:', myAvailabilityResponse.data);
+    console.log(
+      '✅ Retrieved painter availability:',
+      myAvailabilityResponse.data
+    );
 
     console.log('6. Creating booking request...');
     const bookingStart = new Date(tomorrow);
     bookingStart.setHours(10, 0, 0, 0);
-    
+
     const bookingEnd = new Date(tomorrow);
     bookingEnd.setHours(14, 0, 0, 0);
 
@@ -144,7 +150,6 @@ async function testAPI() {
     console.log('✅ User profile retrieved:', profileResponse.data.data.email);
 
     console.log('\n🎉 All API tests completed successfully!');
-
   } catch (error: any) {
     console.error('❌ Test failed:', error.response?.data || error.message);
     throw error; // Re-throw to let the caller handle it

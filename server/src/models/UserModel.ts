@@ -46,15 +46,18 @@ export class UserModel extends BaseModel {
     });
   }
 
-  async update(id: string, userData: Partial<{
-    firstname: string;
-    lastname: string;
-    email: string;
-    password: string;
-    address: string;
-    phone: string;
-    isVerified: boolean;
-  }>) {
+  async update(
+    id: string,
+    userData: Partial<{
+      firstname: string;
+      lastname: string;
+      email: string;
+      password: string;
+      address: string;
+      phone: string;
+      isVerified: boolean;
+    }>
+  ) {
     return await this.prisma.user.update({
       where: { id },
       data: userData,

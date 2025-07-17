@@ -1,14 +1,18 @@
-import { NextFunction, Request, Response } from "express";
-import { typeValidation } from "../../types";
+import { NextFunction, Request, Response } from 'express';
+import { typeValidation } from '../../types';
 
 // Enhanced logger middleware with request/response tracking
-export const loggerMiddleware: typeValidation<{}, {}> = async (req, res, next) => {
+export const loggerMiddleware: typeValidation<{}, {}> = async (
+  req,
+  res,
+  next
+) => {
   const startTime = Date.now();
   const timestamp = new Date().toISOString();
   const requestId = generateRequestId();
 
   // Add request ID to headers for tracking
-  req.headers["x-request-id"] = requestId;
+  req.headers['x-request-id'] = requestId;
 
   // Log incoming request
   console.log(
@@ -16,7 +20,7 @@ export const loggerMiddleware: typeValidation<{}, {}> = async (req, res, next) =
     {
       method: req.method,
       url: req.originalUrl,
-      userAgent: req.get("User-Agent"),
+      userAgent: req.get('User-Agent'),
       ip: req.ip || req.connection.remoteAddress,
       headers: sanitizeHeaders(req.headers),
       body: sanitizeBody(req.body),
@@ -48,7 +52,7 @@ export const loggerMiddleware: typeValidation<{}, {}> = async (req, res, next) =
   };
 
   // Handle errors and completion
-  res.on("finish", () => {
+  res.on('finish', () => {
     const duration = Date.now() - startTime;
     if (res.statusCode >= 400) {
       console.error(
@@ -56,20 +60,17 @@ export const loggerMiddleware: typeValidation<{}, {}> = async (req, res, next) =
           req.originalUrl
         } - ${res.statusCode} (${duration}ms)`
       );
-    }
-    else {
-        console.log(
-            `[${new Date().toISOString()}] [${requestId}] ✅ ${req.method} ${
-            req.originalUrl
-            } - ${res.statusCode} (${duration}ms)`
-        );
+    } else {
+      console.log(
+        `[${new Date().toISOString()}] [${requestId}] ✅ ${req.method} ${
+          req.originalUrl
+        } - ${res.statusCode} (${duration}ms)`
+      );
     }
   });
 
   next();
 };
-
-
 
 // Error logging middleware
 export const errorLogger = (
@@ -79,14 +80,14 @@ export const errorLogger = (
   next: NextFunction
 ) => {
   const timestamp = new Date().toISOString();
-  const requestId = req.headers["x-request-id"] || "unknown";
+  const requestId = req.headers['x-request-id'] || 'unknown';
 
   console.error(`[${timestamp}] [${requestId}] 🚨 ERROR:`, {
     error: err.message,
     stack: err.stack,
     method: req.method,
     url: req.originalUrl,
-    userAgent: req.get("User-Agent"),
+    userAgent: req.get('User-Agent'),
     ip: req.ip || req.connection.remoteAddress,
   });
 
@@ -106,30 +107,30 @@ function sanitizeHeaders(headers: any): any {
   // Remove sensitive headers
   delete sanitized.authorization;
   delete sanitized.cookie;
-  delete sanitized["x-api-key"];
+  delete sanitized['x-api-key'];
   return sanitized;
 }
 
 function sanitizeBody(body: any): any {
-  if (!body || typeof body !== "object") return body;
+  if (!body || typeof body !== 'object') return body;
 
   const sanitized = { ...body };
   // Remove sensitive fields
-  if (sanitized.password) sanitized.password = "[REDACTED]";
-  if (sanitized.token) sanitized.token = "[REDACTED]";
-  if (sanitized.secret) sanitized.secret = "[REDACTED]";
+  if (sanitized.password) sanitized.password = '[REDACTED]';
+  if (sanitized.token) sanitized.token = '[REDACTED]';
+  if (sanitized.secret) sanitized.secret = '[REDACTED]';
 
   return sanitized;
 }
 
 function sanitizeResponse(response: any): any {
-  if (!response || typeof response !== "object") return response;
+  if (!response || typeof response !== 'object') return response;
 
   const sanitized = { ...response };
   // Truncate large responses
   const responseStr = JSON.stringify(sanitized);
   if (responseStr.length > 1000) {
-    return { message: "Response too large to log", size: responseStr.length };
+    return { message: 'Response too large to log', size: responseStr.length };
   }
 
   return sanitized;

@@ -21,7 +21,10 @@ export abstract class BaseHandler {
   protected handleError(res: Response, error: Error): void {
     res.status(500).json({
       success: false,
-      error: process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message,
+      error:
+        process.env.NODE_ENV === 'production'
+          ? 'Internal server error'
+          : error.message,
     });
   }
 }

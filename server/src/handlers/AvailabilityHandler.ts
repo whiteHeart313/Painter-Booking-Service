@@ -17,7 +17,7 @@ export class AvailabilityHandler extends BaseHandler {
         res.status(400).json({
           success: false,
           error: 'Validation error',
-          message: error.details.map(detail => detail.message).join(', '),
+          message: error.details.map((detail) => detail.message).join(', '),
         });
         return;
       }
@@ -33,8 +33,11 @@ export class AvailabilityHandler extends BaseHandler {
 
       const availabilityData: CreateAvailabilityRequest = req.body;
       const painterId = req.user.painterProfile.id;
-      
-      const result = await this.availabilityService.createAvailability(painterId, availabilityData);
+
+      const result = await this.availabilityService.createAvailability(
+        painterId,
+        availabilityData
+      );
       this.sendResponse(res, result);
     } catch (error) {
       this.handleError(res, error as Error);
@@ -53,7 +56,8 @@ export class AvailabilityHandler extends BaseHandler {
       }
 
       const painterId = req.user.painterProfile.id;
-      const result = await this.availabilityService.getPainterAvailability(painterId);
+      const result =
+        await this.availabilityService.getPainterAvailability(painterId);
       this.sendResponse(res, result);
     } catch (error) {
       this.handleError(res, error as Error);
@@ -81,7 +85,10 @@ export class AvailabilityHandler extends BaseHandler {
       }
 
       const painterId = req.user.painterProfile.id;
-      const result = await this.availabilityService.deleteAvailability(id, painterId);
+      const result = await this.availabilityService.deleteAvailability(
+        id,
+        painterId
+      );
       this.sendResponse(res, result);
     } catch (error) {
       this.handleError(res, error as Error);

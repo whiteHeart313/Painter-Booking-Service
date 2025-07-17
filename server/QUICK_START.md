@@ -58,6 +58,7 @@ yarn dev
 ### Authentication Endpoints
 
 #### Register User
+
 ```bash
 POST /api/auth/register
 {
@@ -72,6 +73,7 @@ POST /api/auth/register
 ```
 
 #### Login
+
 ```bash
 POST /api/auth/login
 {
@@ -81,6 +83,7 @@ POST /api/auth/login
 ```
 
 #### Get Profile
+
 ```bash
 GET /api/auth/profile
 Authorization: Bearer YOUR_JWT_TOKEN
@@ -89,6 +92,7 @@ Authorization: Bearer YOUR_JWT_TOKEN
 ### Painter Endpoints
 
 #### Create Availability
+
 ```bash
 POST /api/availability
 Authorization: Bearer PAINTER_JWT_TOKEN
@@ -99,12 +103,14 @@ Authorization: Bearer PAINTER_JWT_TOKEN
 ```
 
 #### Get My Availability
+
 ```bash
 GET /api/availability/me
 Authorization: Bearer PAINTER_JWT_TOKEN
 ```
 
 #### Delete Availability
+
 ```bash
 DELETE /api/availability/{id}
 Authorization: Bearer PAINTER_JWT_TOKEN
@@ -113,6 +119,7 @@ Authorization: Bearer PAINTER_JWT_TOKEN
 ### User Booking Endpoints
 
 #### Create Booking Request
+
 ```bash
 POST /api/booking/booking-request
 Authorization: Bearer USER_JWT_TOKEN
@@ -126,6 +133,7 @@ Authorization: Bearer USER_JWT_TOKEN
 ```
 
 #### Get My Bookings
+
 ```bash
 GET /api/booking/my-bookings
 Authorization: Bearer USER_JWT_TOKEN
@@ -186,15 +194,17 @@ When a user creates a booking request:
 ### Common Issues
 
 1. **Database Connection Error**
+
    ```bash
    # Check if PostgreSQL is running
    docker-compose ps
-   
+
    # Restart database
    docker-compose restart postgres
    ```
 
 2. **Permission Denied**
+
    ```bash
    # Check user role
    # Users can only create bookings
