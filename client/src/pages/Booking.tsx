@@ -186,36 +186,41 @@ export default function Booking() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Link to="/" className="text-gray-600 hover:text-gray-900">
-            <XMarkIcon className="w-6 h-6" />
-          </Link>
-          <div className="flex items-center space-x-8 text-sm text-gray-600">
-            <div className="flex items-center space-x-2">
-              <span className="font-medium">{getTotalRooms()}</span>
-              <span>ROOMS</span>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-8 w-full max-w-[1440px] mx-auto">
+          <div className="flex items-center justify-between p-4 h-[78px]">
+            <div className="flex items-center space-x-24">
+              <Link to="/" className="text-gray-600 hover:text-gray-900">
+                <XMarkIcon className="w-6 h-6" />
+              </Link>
+              <div className="flex flex-col items-center">
+                <div className="flex items-center space-x-1">
+                  <span className="font-medium text-gray-900">{getTotalRooms() || '0'}</span>
+                </div>
+                <span className="text-xs text-gray-500">BEDROOM NUMBER</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex items-center space-x-1">
+                  <span className="font-medium text-gray-900">{selectedService?.name || '-'}</span>
+                </div>
+                <span className="text-xs text-gray-500">CLEAN TYPE</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <div className="flex items-center space-x-1">
+                  <span className="font-medium text-gray-900">
+                    {startDate ? new Date(startDate).toLocaleDateString('en-US', { 
+                      weekday: 'short', 
+                      month: 'short', 
+                      day: 'numeric' 
+                    }) : '-'}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-500">SCHEDULE DATE</span>
+              </div>
+              
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="font-medium">{selectedService?.name || '-'}</span>
-              <span>CLEAN TYPE</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="font-medium">
-                {startDate ? new Date(startDate).toLocaleDateString('en-US', { 
-                  weekday: 'short', 
-                  month: 'short', 
-                  day: 'numeric' 
-                }) : '-'}
-              </span>
-              <span>START DATE</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="font-medium">{address || '-'}</span>
-              <span>ADDRESS</span>
-            </div>
-            <div className="bg-gray-800 text-white px-4 py-2 rounded">
-              <span className="text-lg font-bold">${calculateTotal()}</span>
-              <div className="text-xs">SUB TOTAL</div>
+            <div className="bg-gray-800 text-white px-3 py-1 rounded text-center">
+              <span className="text-lg font-bold leading-tight">${calculateTotal() || '0'}</span>
+              <div className="text-xs leading-tight">SUB TOTAL</div>
             </div>
           </div>
         </div>
