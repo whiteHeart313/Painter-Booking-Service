@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { InputField, AuthButton } from '../../components/auth/FormComponents';
 import { useAuthActions } from '../../hooks/useAuthActions';
@@ -9,11 +9,21 @@ export default function Signup() {
   const navigate = useNavigate();
   const { handleSignup, error, clearError, isSubmitting } = useAuthActions();
   
+  // Render counter
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  
+  console.log(`Signup component render #${renderCount.current}`);
+  console.log('Error state in signup component:', error);
+  console.log('isSubmitting state:', isSubmitting);
+  
   const [formData, setFormData] = useState<SignupRequest>({
-    name: '',
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
     phone: '',
+    role: 'CLIENT',
   });
   
   const [agreeToTerms, setAgreeToTerms] = useState(false);
@@ -23,6 +33,7 @@ export default function Signup() {
     clearError();
     
     if (!agreeToTerms) {
+      // Show error if terms not agreed
       return;
     }
     
@@ -34,13 +45,15 @@ export default function Signup() {
       }
       
       await handleSignup(submitData);
+      // Only navigate on successful signup
       navigate('/', { replace: true });
     } catch (error) {
-      // Error is handled by the hook
+      // Error is handled by AuthContext and will be displayed
+      console.log('Signup error:', error);
     }
   };
 
-  const isFormValid = formData.name && formData.email && formData.password && agreeToTerms;
+  const isFormValid = formData.firstname && formData.lastname && formData.email && formData.password && formData.role && agreeToTerms && formData.phone;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -59,13 +72,36 @@ export default function Signup() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <InputField
-            label="Name"
+            label="First Name"
             type="text"
-            value={formData.name}
-            onChange={(value) => setFormData(prev => ({ ...prev, name: value }))}
-            placeholder="Reece Shearer"
+            value={formData.firstname}
+            onChange={(value) => setFormData(prev => ({ ...prev, firstname: value }))}
+            placeholder="Ammar"
             required
           />
+          <InputField
+            label="Last Name"
+            type="text"
+            value={formData.lastname}
+            onChange={(value) => setFormData(prev => ({ ...prev, lastname: value }))}
+            placeholder="Hamed"
+            required
+          />
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              APPLY AS 
+            </label>
+            <select
+              value={formData.role}
+              onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as 'CLIENT' | 'PAINTER' }))}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              required
+            >
+              <option value="CLIENT">Client</option>
+              <option value="PAINTER">Painter</option>
+            </select>
+          </div>
 
           <InputField
             label="Email"
@@ -86,7 +122,7 @@ export default function Signup() {
           />
 
           <InputField
-            label="Phone (Optional)"
+            label="Phone"
             type="tel"
             value={formData.phone || ''}
             onChange={(value) => setFormData(prev => ({ ...prev, phone: value }))}
@@ -118,7 +154,7 @@ export default function Signup() {
               <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
-
+          
           <AuthButton
             type="submit"
             loading={isSubmitting}
