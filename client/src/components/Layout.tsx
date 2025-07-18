@@ -4,12 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useAuthActions } from '../hooks/useAuthActions';
 
-const navigation = [
-  { name: 'Residential', href: '/' },
-  { name: 'Office', href: '/services' },
-  { name: 'Commercial', href: '/services' },
-  { name: "FAQ's", href: '/contact' },
-];
+
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
@@ -29,6 +24,15 @@ export default function Layout({ children }: LayoutProps) {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  // Create navigation array based on user role
+  const navigation = [
+    { name: 'Residential', href: '/' },
+    ...(user?.role.name === 'USER' ? [
+      { name: 'Book A Service', href: '/booking' },
+      { name: 'My Bookings', href: '/bookings' },
+    ] : []),
+    { name: "FAQ's", href: '/contact' },
+  ];
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Navigation */}
@@ -218,11 +222,20 @@ export default function Layout({ children }: LayoutProps) {
                     Residential
                   </Link>
                 </li>
-                <li>
-                  <Link to="/services/office" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
-                    Office Painting
-                  </Link>
-                </li>
+                {user?.role.name === 'USER' && (
+                    <>
+                  <li>
+                    <Link to="/bookings" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
+                      Your Bookings
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/booking" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
+                      Book A Service
+                    </Link>
+                  </li>
+                  </>
+                )}
                 <li>
                   <Link to="/services/commercial" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
                     Commercial Painting
