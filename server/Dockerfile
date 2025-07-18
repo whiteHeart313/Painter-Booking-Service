@@ -20,5 +20,5 @@ RUN yarn build
 
 EXPOSE 3000
 
-# Run migrations on startup and then start the server
-CMD ["sh", "-c", "yarn migrate:deploy && yarn serve"]
+# Run migrations and seed on startup, then start the server
+CMD ["sh", "-c", "yarn migrate:deploy && yarn prisma db seed && yarn serve"]

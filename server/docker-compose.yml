@@ -49,7 +49,7 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: yarn dev
+    command: sh -c "yarn migrate:deploy && yarn prisma db seed && yarn dev"
 
 volumes:
   postgres_data:
