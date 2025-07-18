@@ -51,12 +51,12 @@ export default function Login() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-8">
+            <Link to="/" className="flex items-center justify-center space-x-2 mb-8 hover:opacity-80 transition-opacity">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
                 <PaintBrushIcon className="h-5 w-5 text-white" />
               </div>
               <span className="text-4xl font-bold text-gray-900">Clëan</span>
-            </div>
+            </Link>
             <h2 className="text-2xl font-semibold text-gray-900">
               Reset Password
             </h2>
@@ -118,12 +118,12 @@ export default function Login() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-8">
+          <Link to="/" className="flex items-center justify-center space-x-2 mb-8 hover:opacity-80 transition-opacity">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
               <PaintBrushIcon className="h-5 w-5 text-white" />
             </div>
-            <span className="text-4xl font-bold text-gray-900">Clëan</span>
-          </div>
+            <span className="text-4xl font-bold text-gray-900">Paint</span>
+          </Link>
           <h2 className="text-2xl font-semibold text-gray-900">
             Login
           </h2>
