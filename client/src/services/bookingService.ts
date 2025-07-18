@@ -1,7 +1,7 @@
 import type { CleaningBookingRequest, CleaningBooking, BookingResponse, CreateBookingRequest } from '../types';
 import { getCookie } from '../utils/cookies';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 export class BookingService {
   /**
@@ -19,11 +19,9 @@ export class BookingService {
    */
   static async submitCleaningBooking(bookingData: CleaningBookingRequest): Promise<CleaningBooking> {
     try {
-      const response = await fetch(`${API_BASE_URL}/bookings/cleaning`, {
+      const response = await fetch(`${API_BASE_URL}/booking/booking-request`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getAuthHeaders(),
         body: JSON.stringify(bookingData),
       });
 
@@ -157,7 +155,9 @@ export class BookingService {
    */
   static async createBookingRequest(bookingData: CreateBookingRequest): Promise<BookingResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/booking/booking-request`, {
+      console.log('Creating booking request with data:', bookingData);
+      
+      const response = await fetch(`${API_BASE_URL}/api/booking/booking-request`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(bookingData),
@@ -181,7 +181,7 @@ export class BookingService {
    */
   static async getUserBookings(): Promise<BookingResponse[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/booking/my-bookings`, {
+      const response = await fetch(`${API_BASE_URL}/api/booking/my-bookings`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });

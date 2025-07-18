@@ -6,17 +6,14 @@ const API_BASE_URL = import.meta.env.API_ENDPOINT || 'http://localhost:3000';
 export interface AvailabilityData {
   id?: string;
   painterId: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  isAvailable: boolean;
+  startTime: string; // ISO string
+  endTime: string;   // ISO string
+  isBooked?: boolean;
 }
 
 export interface CreateAvailabilityRequest {
-  date: string;
-  startTime: string;
-  endTime: string;
-  isAvailable: boolean;
+  startTime: string; // ISO string
+  endTime: string;   // ISO string
 }
 
 class AvailabilityService {
@@ -53,7 +50,8 @@ class AvailabilityService {
       const response = await this.api.post('/', data);
       return response.data.data;
     } catch (error) {
-      console.error('Error creating availability:', error);
+      // error may be any type, so use type assertion inside the block if needed
+      console.error('Error creating availability:', (error as any)?.response?.data.error || error);
       throw new Error('Failed to create availability');
     }
   }
