@@ -42,7 +42,7 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/bookings" element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requiredRole="USER">
                     <MyBookings />
                   </ProtectedRoute>
                 } />
