@@ -182,13 +182,13 @@ cd client
 yarn install
 
 # Start development server
-yarb  dev
+yarn  dev
 
 # Build for production
-yarb  build
+yarn  build
 
 # Preview production build
-yarb  preview
+yarn  preview
 ```
 
 ### **Available Scripts**
