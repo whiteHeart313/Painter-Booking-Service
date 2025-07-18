@@ -94,7 +94,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
-  role: 'CLIENT' | 'PAINTER';
+  role: 'USER' | 'PAINTER';
   avatar?: string;
   createdAt: string;
   updatedAt: string;
@@ -111,7 +111,7 @@ export interface SignupRequest {
   email: string;
   password: string;
   phone?: string;
-  role: 'CLIENT' | 'PAINTER';
+  role: 'USER' | 'PAINTER';
 }
 
 export interface AuthResponse {
