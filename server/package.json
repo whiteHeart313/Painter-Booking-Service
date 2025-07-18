@@ -18,6 +18,7 @@
     "reset": "yarn clean && yarn install",
     "test": "echo \"No tests specified\" && exit 0",
     "test:api": "ts-node -e \"require('./test-api').main()\"",
+    "verify": "node setup-verify.js",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
@@ -58,5 +59,8 @@
     "ts-node-dev": "^2.0.0",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.8.3"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
