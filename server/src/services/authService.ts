@@ -67,10 +67,17 @@ export class AuthService {
       }
 
       const hashedPassword = await bcrypt.hash(data.password, 10);
-
+      let role = await this.userRoleModel.findByName(data.role);
+      if (!role) {
+        role = await this.userRoleModel.create({
+          name: data.role,
+          description: `Role for ${data.role}`,
+        });
+      }
       const user = await this.userModel.create({
         ...data,
         password: hashedPassword,
+        roleId: role.id ,
       });
 
       const token = generateToken(user);
