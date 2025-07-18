@@ -11,7 +11,6 @@ export class AuthService {
    * Login user with email and password
    */
   static async login(credentials: LoginRequest): Promise<AuthResponse> {
-    console.log('🔍 AuthService: Login attempt for:', credentials.email);
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -21,25 +20,19 @@ export class AuthService {
         body: JSON.stringify(credentials),
       });
 
-      console.log('🔍 AuthService: Login response status:', response.status);
-      
       if (!response.ok) {
         const errorData = await response.json();
-        console.log('🔍 AuthService: Login failed with error:', errorData);
         throw new Error(errorData.message || 'Login failed');
       }
 
       const {data} = await response.json();
-      console.log('🔍 AuthService: Login successful, data received:', data);
       
       // Store tokens in cookies
-      console.log('🔍 AuthService: Storing token in cookies');
       setCookie(this.TOKEN_KEY, data.token, 7);
       
-      console.log('🔍 AuthService: Token stored, returning data');
       return data;
     } catch (error) {
-      console.error('🔍 AuthService: Login error:', error);
+      console.error('Login error:', error);
       throw error;
     }
   }
@@ -98,16 +91,11 @@ export class AuthService {
    * Get current user profile
    */
   static async getCurrentUser(): Promise<User> {
-    console.log('🔍 AuthService: getCurrentUser called');
     try {
       const token = this.getToken();
       if (!token) {
-        console.log('🔍 AuthService: No token found in getCurrentUser');
         throw new Error('No authentication token found');
       }
-      
-      console.log('🔍 AuthService: Making request to', `${API_BASE_URL}/auth/profile`);
-      console.log('🔍 AuthService: Using token:', token.substring(0, 20) + '...');
       
       const response = await fetch(`${API_BASE_URL}/auth/profile`, {
         headers: {
@@ -115,21 +103,15 @@ export class AuthService {
         },
       });
 
-      console.log('🔍 AuthService: getCurrentUser response status:', response.status);
-      
       if (!response.ok) {
         const errorData = await response.json();
-        console.log('🔍 AuthService: getCurrentUser failed with error:', errorData);
         throw new Error(errorData.message || 'Failed to fetch user');
       }
 
       const {data} = await response.json();
-      console.log('🔍 AuthService: getCurrentUser success, full response:', data);
-      
-      // Backend returns user data directly in 'data', not 'data.user'
       return data;
     } catch (error) {
-      console.error('🔍 AuthService: getCurrentUser error:', error);
+      console.error('Get current user error:', error);
       throw error;
     }
   }
@@ -177,9 +159,7 @@ export class AuthService {
    * Get stored authentication token
    */
   static getToken(): string | null {
-    const token = getCookie(this.TOKEN_KEY) || null;
-    console.log('🔍 AuthService: getToken called, token found:', token ? 'Yes' : 'No');
-    return token;
+    return getCookie(this.TOKEN_KEY) || null;
   }
 
   /**
