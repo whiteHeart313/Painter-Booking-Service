@@ -73,7 +73,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="hidden md:flex items-center space-x-4">
               {isAuthenticated ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-gray-700">Hello, {user?.name}</span>
+                  <span className="text-gray-700">Hello, {user?.firstname} {user?.lastname}</span>
                   <button
                     onClick={handleLogout}
                     className="text-gray-700 hover:text-blue-600 transition-colors duration-200"
