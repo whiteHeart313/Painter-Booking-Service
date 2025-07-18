@@ -67,7 +67,7 @@ export default function Booking() {
                 <div className="flex items-center space-x-1">
                   <span className="font-medium text-gray-900">{selectedService?.name || '-'}</span>
                 </div>
-                <span className="text-xs text-gray-500">CLEAN TYPE</span>
+                <span className="text-xs text-gray-500">PAINT TYPE</span>
               </div>
               <div className="flex flex-col items-center">
                 <div className="flex items-center space-x-1">

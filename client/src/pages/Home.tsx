@@ -72,7 +72,7 @@ export default function Home() {
     },
     {
       title: '10 Easy Ways to Maintain Your Painted Walls',
-      excerpt: 'Keep your painted walls looking fresh and new with these simple maintenance tips. From cleaning to touch-ups, we cover it all...',
+      excerpt: 'Keep your painted walls looking fresh and new with these simple maintenance tips. From painting to touch-ups, we cover it all...',
       author: 'Lisa Chen',
       date: 'December 10, 2024',
       image: '/api/placeholder/400/250',
