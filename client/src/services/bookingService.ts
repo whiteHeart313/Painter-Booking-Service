@@ -1,8 +1,19 @@
-import type { CleaningBookingRequest, CleaningBooking } from '../types';
+import type { CleaningBookingRequest, CleaningBooking, BookingResponse, CreateBookingRequest } from '../types';
+import { getCookie } from '../utils/cookies';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 export class BookingService {
+  /**
+   * Get authentication headers
+   */
+  private static getAuthHeaders() {
+    const token = getCookie('auth_token');
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    };
+  }
   /**
    * Submit a cleaning service booking
    */
@@ -137,6 +148,53 @@ export class BookingService {
       return result.data;
     } catch (error) {
       console.error('Error checking availability:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create a booking request
+   */
+  static async createBookingRequest(bookingData: CreateBookingRequest): Promise<BookingResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/booking/booking-request`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(bookingData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || errorData.error || 'Failed to create booking request');
+      }
+
+      const result = await response.json();
+      return result.data;
+    } catch (error) {
+      console.error('Create booking request error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get user's bookings
+   */
+  static async getUserBookings(): Promise<BookingResponse[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/booking/my-bookings`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || errorData.error || 'Failed to fetch bookings');
+      }
+
+      const result = await response.json();
+      return result.data || [];
+    } catch (error) {
+      console.error('Get user bookings error:', error);
       throw error;
     }
   }
