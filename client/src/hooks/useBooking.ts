@@ -159,7 +159,7 @@ export const useBooking = () => {
       case 1:
         return 'SELECT ROOM TYPES & QUANTITIES';
       case 2:
-        return 'CLEAN TYPE';
+        return 'PAINT TYPE';
       case 3:
         return 'ADDRESS';
       case 4:

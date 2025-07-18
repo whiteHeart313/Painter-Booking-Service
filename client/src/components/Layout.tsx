@@ -40,7 +40,7 @@ export default function Layout({ children }: LayoutProps) {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
                 <PaintBrushIcon className="h-5 w-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">Clean</span>
+              <span className="text-xl font-bold text-gray-900">Paint</span>
             </Link>
             
             {/* Desktop Navigation */}
@@ -150,7 +150,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
                   <PaintBrushIcon className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold text-gray-900">Clean</span>
+                <span className="text-xl font-bold text-gray-900">Paint</span>
               </div>
               
               {/* Social Media Icons */}
@@ -220,12 +220,12 @@ export default function Layout({ children }: LayoutProps) {
                 </li>
                 <li>
                   <Link to="/services/office" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
-                    Office Cleaning
+                    Office Painting
                   </Link>
                 </li>
                 <li>
                   <Link to="/services/commercial" className="text-gray-600 hover:text-gray-900 transition-colors text-sm">
-                    Commercial Cleaning
+                    Commercial Painting
                   </Link>
                 </li>
               </ul>
@@ -258,7 +258,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-purple-600">
                   <PaintBrushIcon className="h-3 w-3 text-white" />
                 </div>
-                <span className="text-sm text-gray-600">© Clean Co. All rights reserved.</span>
+                <span className="text-sm text-gray-600">© Paint Co. All rights reserved.</span>
               </div>
               <div className="flex space-x-6">
                 <Link to="/terms" className="text-gray-600 hover:text-gray-900 text-sm transition-colors">

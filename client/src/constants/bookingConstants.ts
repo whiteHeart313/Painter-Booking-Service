@@ -29,7 +29,7 @@ export const SERVICE_TYPES: ServiceType[] = [
   },
   { 
     id: 'deep', 
-    name: 'Deep Clean', 
+    name: 'Deep Painting', 
     duration: '2.5-3 hours', 
     pricePerRoom: 120, 
     durationInHours: 3
