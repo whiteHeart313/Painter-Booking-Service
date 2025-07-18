@@ -40,7 +40,7 @@ export class AuthService {
   /**
    * Register new user
    */
-  static async signup(userData: SignupRequest): Promise<AuthResponse> {
+  static async signup(userData: SignupRequest): Promise<AuthResponse > {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
