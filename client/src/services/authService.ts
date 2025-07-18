@@ -1,7 +1,7 @@
 import type { LoginRequest, SignupRequest, AuthResponse, User } from '../types';
 import { getCookie, setCookie, removeCookie } from '../utils/cookies';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+const API_BASE_URL = import.meta.env.API_ENDPOINT || 'http://localhost:3000/api';
 
 export class AuthService {
   private static TOKEN_KEY = 'auth_token';
@@ -25,11 +25,10 @@ export class AuthService {
         throw new Error(errorData.message || 'Login failed');
       }
 
-      const data = await response.json();
+      const {data} = await response.json();
       
       // Store tokens in cookies
       setCookie(this.TOKEN_KEY, data.token, 7);
-      setCookie(this.REFRESH_TOKEN_KEY, data.refreshToken, 30);
 
       return data;
     } catch (error) {
@@ -50,18 +49,19 @@ export class AuthService {
         },
         body: JSON.stringify(userData),
       });
-
       if (!response.ok) {
-        const errorData = await response.json();
+          const errorData = await response.json();
+          console.log('ERROR IN SIGNUP:', errorData);
         throw new Error(errorData.message || 'Registration failed');
       }
 
-      const data = await response.json();
+      const {data} = await response.json();
+      console.log('SIGNUP RESPONSE:', data);            
       
       // Store tokens in cookies
       setCookie(this.TOKEN_KEY, data.token, 7);
       setCookie(this.REFRESH_TOKEN_KEY, data.refreshToken, 30);
-
+      
       return data;
     } catch (error) {
       console.error('Signup error:', error);
@@ -114,7 +114,8 @@ export class AuthService {
         throw new Error(errorData.message || 'Failed to fetch user');
       }
 
-      const data = await response.json();
+      const {data} = await response.json();
+      console.log('Current user data:', data.user);
       return data.user;
     } catch (error) {
       console.error('Get current user error:', error);
@@ -145,7 +146,7 @@ export class AuthService {
         throw new Error(errorData.message || 'Token refresh failed');
       }
 
-      const data = await response.json();
+      const {data} = await response.json();
       
       // Update tokens in cookies
       setCookie(this.TOKEN_KEY, data.token, 7);
