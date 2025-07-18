@@ -24,6 +24,7 @@ export default function Signup() {
     password: '',
     phone: '',
     role: 'USER',
+    address: '',
   });
   
   const [agreeToTerms, setAgreeToTerms] = useState(false);
@@ -38,12 +39,7 @@ export default function Signup() {
     }
     
     try {
-      // Remove phone if empty
       const submitData = { ...formData };
-      if (!submitData.phone) {
-        delete submitData.phone;
-      }
-      
       await handleSignup(submitData);
       // Only navigate on successful signup
       navigate('/', { replace: true });
@@ -94,11 +90,11 @@ export default function Signup() {
             </label>
             <select
               value={formData.role}
-              onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as 'CLIENT' | 'PAINTER' }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as 'USER' | 'PAINTER' }))}
               className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               required
             >
-              <option value="CLIENT">USER</option>
+              <option value="USER">USER</option>
               <option value="PAINTER">PAINTER</option>
             </select>
           </div>
@@ -128,6 +124,14 @@ export default function Signup() {
             onChange={(value) => setFormData(prev => ({ ...prev, phone: value }))}
             placeholder="+1 (555) 123-4567"
           />
+          <InputField
+              label="Address"
+              type="text"
+              value={formData.address}
+              onChange={(value) => setFormData(prev => ({ ...prev, address: value }))}
+              placeholder="123 Main St"
+              required
+            />
 
           <div className="flex items-start space-x-3">
             <input
@@ -137,6 +141,7 @@ export default function Signup() {
               onChange={(e) => setAgreeToTerms(e.target.checked)}
               className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
+            
             <label htmlFor="terms" className="text-sm text-gray-600">
               I agree to the{' '}
               <Link to="/terms" className="text-blue-600 hover:text-blue-700">
