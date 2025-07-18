@@ -13,6 +13,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Initialize auth state on mount
   useEffect(() => {
@@ -39,11 +40,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = async (credentials: LoginRequest) => {
     try {
       setIsLoading(true);
+      setError(null);
       const response = await AuthService.login(credentials);
       setUser(response.user);
       setToken(response.token);
     } catch (error) {
       console.error('Login failed:', error);
+      setError(error instanceof Error ? error.message : 'Login failed');
       throw error;
     } finally {
       setIsLoading(false);
@@ -53,11 +56,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signup = async (userData: SignupRequest) => {
     try {
       setIsLoading(true);
+      setError(null);
       const response = await AuthService.signup(userData);
-      setUser(response.user);
-      setToken(response.token);
+      setUser(response?.user);
+      setToken(response?.token);
     } catch (error) {
-      console.error('Signup failed:', error);
+      console.error('Signup failed Here in Auth Provider:', error);
+      setError(error instanceof Error ? error.message : 'Signup failed');
       throw error;
     } finally {
       setIsLoading(false);
@@ -67,14 +72,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       await AuthService.logout();
       setUser(null);
       setToken(null);
     } catch (error) {
       console.error('Logout failed:', error);
+      setError(error instanceof Error ? error.message : 'Logout failed');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const clearError = () => {
+    setError(null);
   };
 
   const value: AuthContextType = {
@@ -85,6 +96,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     logout,
     isAuthenticated: !!user && !!token,
     isLoading,
+    error,
+    clearError,
   };
 
   return (

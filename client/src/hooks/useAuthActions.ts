@@ -4,17 +4,15 @@ import { AuthService } from '../services/authService';
 import type { LoginRequest, SignupRequest } from '../types';
 
 export const useAuthActions = () => {
-  const { login, signup, logout, isLoading } = useAuth();
-  const [error, setError] = useState<string | null>(null);
+  const { login, signup, logout, isLoading, error, clearError } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async (credentials: LoginRequest) => {
     try {
       setIsSubmitting(true);
-      setError(null);
       await login(credentials);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Login failed');
+      // Error is handled by AuthContext
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -24,11 +22,10 @@ export const useAuthActions = () => {
   const handleSignup = async (userData: SignupRequest) => {
     try {
       setIsSubmitting(true);
-      setError(null);
       await signup(userData);
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Signup failed');
-      throw error;
+    } catch (caughtError) {
+      // Error is handled by AuthContext
+      throw caughtError;
     } finally {
       setIsSubmitting(false);
     }
@@ -37,10 +34,9 @@ export const useAuthActions = () => {
   const handleLogout = async () => {
     try {
       setIsSubmitting(true);
-      setError(null);
       await logout();
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Logout failed');
+      // Error is handled by AuthContext
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -50,17 +46,15 @@ export const useAuthActions = () => {
   const handleForgotPassword = async (email: string) => {
     try {
       setIsSubmitting(true);
-      setError(null);
       await AuthService.forgotPassword(email);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Failed to send reset email');
+      // This one doesn't go through AuthContext, so we need to handle it
+      // For now, we'll just throw and let the component handle it
       throw error;
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const clearError = () => setError(null);
 
   return {
     handleLogin,
