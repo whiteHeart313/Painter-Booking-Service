@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { paintingAPI } from '../services/api';
-import type { Booking } from '../types';
+import { BookingService } from '../services/bookingService';
+import type { BookingResponse } from '../types';
 
 export default function MyBookings() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookings, setBookings] = useState<BookingResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,71 +14,27 @@ export default function MyBookings() {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const data = await paintingAPI.getBookings();
+      setError(null);
+      const data = await BookingService.getUserBookings();
       setBookings(data);
     } catch (err) {
       console.error('Error fetching bookings:', err);
-      // Mock data for demonstration
-      setBookings([
-        {
-          id: '1',
-          customerName: 'John Doe',
-          customerEmail: 'john@example.com',
-          customerPhone: '(555) 123-4567',
-          service: {
-            id: '1',
-            name: 'Interior Painting',
-            description:
-              'Transform your indoor spaces with our professional interior painting services.',
-            price: 150,
-            duration: '1-2 days',
-            image: '/api/placeholder/300/200',
-            category: 'interior',
-          },
-          preferredDate: '2024-01-15',
-          address: '123 Main St, Anytown, ST 12345',
-          additionalNotes: 'Please focus on the living room and kitchen areas.',
-          status: 'confirmed',
-          createdAt: '2024-01-10T10:00:00Z',
-        },
-        {
-          id: '2',
-          customerName: 'Jane Smith',
-          customerEmail: 'jane@example.com',
-          customerPhone: '(555) 987-6543',
-          service: {
-            id: '2',
-            name: 'Exterior Painting',
-            description:
-              "Protect and beautify your home's exterior with our weather-resistant painting solutions.",
-            price: 250,
-            duration: '2-3 days',
-            image: '/api/placeholder/300/200',
-            category: 'exterior',
-          },
-          preferredDate: '2024-01-20',
-          address: '456 Oak Ave, Somewhere, ST 67890',
-          additionalNotes: 'Need to match the existing trim color.',
-          status: 'pending',
-          createdAt: '2024-01-12T14:30:00Z',
-        },
-      ]);
+      setError(err instanceof Error ? err.message : 'Failed to fetch bookings');
     } finally {
       setLoading(false);
     }
   };
-
-  const getStatusColor = (status: Booking['status']) => {
+  const getStatusColor = (status: BookingResponse['status']) => {
     switch (status) {
-      case 'pending':
+      case 'PENDING':
         return 'bg-yellow-100 text-yellow-800';
-      case 'confirmed':
+      case 'CONFIRMED':
         return 'bg-blue-100 text-blue-800';
-      case 'in-progress':
+      case 'IN_PROGRESS':
         return 'bg-purple-100 text-purple-800';
-      case 'completed':
+      case 'COMPLETED':
         return 'bg-green-100 text-green-800';
-      case 'cancelled':
+      case 'CANCELLED':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -153,7 +109,7 @@ export default function MyBookings() {
             </p>
             <div className="mt-6">
               <button
-                onClick={() => (window.location.href = '/services')}
+                onClick={() => (window.location.href = '/booking')}
                 className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 Book a Service
@@ -172,7 +128,7 @@ export default function MyBookings() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="text-lg font-semibold text-gray-900">
-                          {booking.service.name}
+                          Painting Service Booking
                         </h3>
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
@@ -180,38 +136,56 @@ export default function MyBookings() {
                           )}`}
                         >
                           {booking.status.charAt(0).toUpperCase() +
-                            booking.status.slice(1)}
+                            booking.status.slice(1).toLowerCase()}
                         </span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                           <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium">Preferred Date:</span>{' '}
-                            {formatDate(booking.preferredDate)}
+                            <span className="font-medium">Requested Start:</span>{' '}
+                            {formatDate(booking.requestedStart)}
                           </p>
                           <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium">Duration:</span>{' '}
-                            {booking.service.duration}
+                            <span className="font-medium">Requested End:</span>{' '}
+                            {formatDate(booking.requestedEnd)}
                           </p>
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium">Price:</span> $
-                            {booking.service.price}
-                          </p>
+                          {booking.scheduledStart && booking.scheduledEnd && (
+                            <>
+                              <p className="text-sm text-gray-600 mb-1">
+                                <span className="font-medium">Scheduled Start:</span>{' '}
+                                {formatDate(booking.scheduledStart)}
+                              </p>
+                              <p className="text-sm text-gray-600 mb-1">
+                                <span className="font-medium">Scheduled End:</span>{' '}
+                                {formatDate(booking.scheduledEnd)}
+                              </p>
+                            </>
+                          )}
+                          {booking.estimatedHours && (
+                            <p className="text-sm text-gray-600">
+                              <span className="font-medium">Estimated Hours:</span>{' '}
+                              {booking.estimatedHours}
+                            </p>
+                          )}
                         </div>
 
                         <div>
-                          <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium">Contact:</span>{' '}
-                            {booking.customerEmail}
-                          </p>
-                          <p className="text-sm text-gray-600 mb-1">
-                            <span className="font-medium">Phone:</span>{' '}
-                            {booking.customerPhone}
-                          </p>
+                          {booking.painter && (
+                            <div className="mb-2">
+                              <p className="text-sm text-gray-600 mb-1">
+                                <span className="font-medium">Assigned Painter:</span>{' '}
+                                {booking.painter.firstname} {booking.painter.lastname}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                <span className="font-medium">Rating:</span>{' '}
+                                {booking.painter.rating}/5 ⭐
+                              </p>
+                            </div>
+                          )}
                           <p className="text-sm text-gray-600">
-                            <span className="font-medium">Booked:</span>{' '}
-                            {formatDate(booking.createdAt)}
+                            <span className="font-medium">Status:</span>{' '}
+                            {booking.status}
                           </p>
                         </div>
                       </div>
@@ -225,44 +199,33 @@ export default function MyBookings() {
                         </p>
                       </div>
 
-                      {booking.additionalNotes ? (
+                      {booking.description && (
                         <div className="mb-4">
                           <p className="text-sm text-gray-600 mb-1">
                             <span className="font-medium">
-                              Additional Notes:
+                              Description:
                             </span>
                           </p>
                           <p className="text-sm text-gray-700">
-                            {booking.additionalNotes}
+                            {booking.description}
                           </p>
                         </div>
-                      ) : null}
-
-                      <div className="bg-gray-50 p-3 rounded-md">
-                        <p className="text-sm text-gray-600 mb-1">
-                          <span className="font-medium">
-                            Service Description:
-                          </span>
-                        </p>
-                        <p className="text-sm text-gray-700">
-                          {booking.service.description}
-                        </p>
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-gray-50 px-6 py-3 flex justify-end space-x-3">
-                  {booking.status === 'pending' ? (
+                  {booking.status === 'PENDING' && (
                     <button className="text-sm text-red-600 hover:text-red-800">
                       Cancel Booking
                     </button>
-                  ) : null}
-                  {booking.status === 'confirmed' ? (
+                  )}
+                  {booking.status === 'CONFIRMED' && (
                     <button className="text-sm text-blue-600 hover:text-blue-800">
-                      Reschedule
+                      Contact Painter
                     </button>
-                  ) : null}
+                  )}
                   <button className="text-sm text-gray-600 hover:text-gray-800">
                     Contact Support
                   </button>
