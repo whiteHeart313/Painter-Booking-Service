@@ -106,10 +106,12 @@ export interface LoginRequest {
 }
 
 export interface SignupRequest {
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
   password: string;
   phone?: string;
+  role: 'CLIENT' | 'PAINTER';
 }
 
 export interface AuthResponse {
@@ -125,4 +127,6 @@ export interface AuthContextType {
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
+  error: string | null;
+  clearError: () => void;
 }
