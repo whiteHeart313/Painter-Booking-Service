@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { BookingService } from '../services/bookingService';
-import type { CleaningBookingRequest } from '../types';
+import { combineDateAndTime } from '../utils/dateUtils';
 import type { ServiceType } from '../constants/bookingConstants';
 
 interface RoomSelection {
@@ -22,13 +22,6 @@ export const useBooking = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  // Customer info - you might want to get this from a form or user context
-  const customerInfo = {
-    name: '',
-    email: '',
-    phone: ''
-  };
 
   // Room and service management
   const handleRoomTypeSelect = (roomType: string) => {
@@ -180,30 +173,18 @@ export const useBooking = () => {
     setError(null);
 
     try {
-      const bookingData: CleaningBookingRequest = {
-        customerName: customerInfo.name || 'John Doe', // TODO: Replace with actual customer data
-        customerEmail: customerInfo.email || 'john.doe@example.com', // TODO: Get from user input
-        customerPhone: customerInfo.phone || '+1234567890', // TODO: Get from user input
-        selectedRooms,
-        selectedService: {
-          id: selectedService.id,
-          name: selectedService.name,
-          duration: selectedService.duration,
-          durationInHours: selectedService.durationInHours || 2,
-          pricePerRoom: selectedService.pricePerRoom
-        },
+      // Convert date and time to ISO format
+      const bookingData = {
+        requestedStart: combineDateAndTime(startDate, startTime),
+        requestedEnd: combineDateAndTime(endDate, endTime),
+        description: `${selectedService.name} service for ${getTotalRooms()} rooms`,
         address,
-        startDate,
-        startTime,
-        endDate,
-        endTime,
-        totalCost: calculateTotal(),
-        totalRooms: getTotalRooms(),
-        totalDuration: getTotalDurationHours(),
-        additionalNotes: '' // You can add a notes field to the form if needed
+        estimatedHours: getTotalDurationHours()
       };
 
-      const result = await BookingService.submitCleaningBooking(bookingData);
+      console.log('Sending booking data:', bookingData);
+
+      const result = await BookingService.createBookingRequest(bookingData);
       setBookingId(result.id);
       setIsCompleted(true);
     } catch (error) {
