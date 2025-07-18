@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { PaintBrushIcon } from '@heroicons/react/24/solid';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useAuthActions } from '../hooks/useAuthActions';
 
 const navigation = [
   { name: 'Residential', href: '/' },
@@ -20,6 +22,8 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth();
+  const { handleLogout } = useAuthActions();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -57,14 +61,26 @@ export default function Layout({ children }: LayoutProps) {
               ))}
             </div>
 
-            {/* Login Button */}
-            <div className="hidden md:flex items-center">
-              <Link
-                to="/book"
-                className="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors duration-200"
-              >
-                Login
-              </Link>
+            {/* Auth Section */}
+            <div className="hidden md:flex items-center space-x-4">
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-gray-700">Hello, {user?.name}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-700 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="inline-flex items-center px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors duration-200"
+                >
+                  Login
+                </Link>
+              )}
             </div>
 
             {/* Mobile menu button */}

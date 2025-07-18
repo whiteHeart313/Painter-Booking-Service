@@ -88,3 +88,42 @@ export interface ContactForm {
   phone: string;
   message: string;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: 'customer' | 'admin';
+  avatar?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface SignupRequest {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+  refreshToken: string;
+}
+
+export interface AuthContextType {
+  user: User | null;
+  token: string | null;
+  login: (credentials: LoginRequest) => Promise<void>;
+  signup: (data: SignupRequest) => Promise<void>;
+  logout: () => void;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}
