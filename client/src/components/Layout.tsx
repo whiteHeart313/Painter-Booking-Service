@@ -31,6 +31,10 @@ export default function Layout({ children }: LayoutProps) {
       { name: 'Book A Service', href: '/booking' },
       { name: 'My Bookings', href: '/bookings' },
     ] : []),
+    ...(user?.role.name === 'PAINTER' ? [
+      { name: 'Set Availability', href: '/availability' },
+      { name: 'See Your Appointments', href: '/appointments' },
+    ] : []),
     { name: "FAQ's", href: '/contact' },
   ];
   return (
