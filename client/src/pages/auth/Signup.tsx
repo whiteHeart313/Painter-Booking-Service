@@ -49,7 +49,7 @@ export default function Signup() {
     }
   };
 
-  const isFormValid = formData.firstname && formData.lastname && formData.email && formData.password && formData.role && agreeToTerms && formData.phone;
+  const isFormValid = formData.firstname && formData.lastname && formData.email && formData.password && formData.role && agreeToTerms && formData.phone && formData.address;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
