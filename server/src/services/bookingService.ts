@@ -114,6 +114,7 @@ export class BookingService {
     try {
       const bookingRequests =
         await this.bookingModel.findBookingRequestsByUserId(userId);
+
       const bookings = bookingRequests.map((req) =>
         this.formatBookingResponse(req, req.booking)
       );
