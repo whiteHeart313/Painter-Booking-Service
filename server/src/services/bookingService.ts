@@ -268,4 +268,40 @@ export class BookingService {
       estimatedHours: bookingRequest.estimatedHours,
     };
   }
+
+  async getPainterAppointments(painterId: string): Promise<ServiceResult<any[]>> {
+    try {
+      const appointments = await this.bookingModel.findBookingsByPainterId(painterId);
+      
+      const formattedAppointments = appointments.map(appointment => ({
+        id: appointment.id,
+        bookingId: appointment.bookingRequestId,
+        customer: {
+          name: `${appointment.bookingRequest.user.firstname} ${appointment.bookingRequest.user.lastname}`,
+          email: appointment.bookingRequest.user.email,
+          phone: appointment.bookingRequest.user.phone || '',
+        },
+        scheduledStart: appointment.scheduledStart.toISOString(),
+        scheduledEnd: appointment.scheduledEnd.toISOString(),
+        address: appointment.bookingRequest.address,
+        description: appointment.bookingRequest.description,
+        status: appointment.status,
+        estimatedHours: appointment.bookingRequest.estimatedHours,
+        notes: appointment.notes,
+      }));
+
+      return {
+        success: true,
+        data: formattedAppointments,
+      };
+    } catch (error) {
+      console.error('Error fetching painter appointments:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch appointments',
+      };
+    }
+  }
+
+ 
 }

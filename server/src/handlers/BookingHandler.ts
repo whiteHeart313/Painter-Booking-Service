@@ -62,4 +62,23 @@ export class BookingHandler extends BaseHandler {
       this.handleError(res, error as Error);
     }
   };
+
+  getMyAppointments = async (req: Request, res: Response): Promise<void> => {
+    try {
+      // Check if user is authenticated and has painter profile
+      if (!req.user?.painterProfile) {
+        res.status(403).json({
+          success: false,
+          error: 'Only painters can view appointments',
+        });
+        return;
+      }
+
+      const painterId = req.user.painterProfile.id;
+      const result = await this.bookingService.getPainterAppointments(painterId);
+      this.sendResponse(res, result);
+    } catch (error) {
+      this.handleError(res, error as Error);
+    }
+  };
 }

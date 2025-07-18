@@ -7,7 +7,7 @@ const router = Router();
 // Get handlers from container
 const { booking: bookingHandler } = container.handlers;
 
-// Routes
+// User routes
 router.post(
   '/booking-request',
   authMiddleware,
@@ -20,6 +20,14 @@ router.get(
   authMiddleware,
   requireRole(['USER']),
   bookingHandler.getMyBookings
+);
+
+// Painter routes
+router.get(
+  '/my-appointments',
+  authMiddleware,
+  requireRole(['PAINTER']),
+  bookingHandler.getMyAppointments
 );
 
 export default router;

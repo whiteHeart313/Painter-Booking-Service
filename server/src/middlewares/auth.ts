@@ -32,6 +32,7 @@ export const authMiddleware = async (
 
     req.user = user;
     req.userRole = user.role;
+    logger.info(`User ${user.id} authenticated successfully`);
     next();
   } catch (error) {
     logger.error('Auth middleware error:', error);
@@ -45,6 +46,7 @@ export const requireRole = (roles: string[]) => {
       res.status(403).json({ message: 'Insufficient permissions' });
       return;
     }
+    logger.info(`User ${req.user?.id} has required role: ${req.userRole.name}`);
     next();
   };
 };
