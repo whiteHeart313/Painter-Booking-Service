@@ -94,10 +94,15 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
-  role: 'USER' | 'PAINTER';
+  role:Role;
+  roleId: string;
   avatar?: string;
   createdAt: string;
   updatedAt: string;
+}
+export interface Role {
+  id: string;
+  name: string;
 }
 
 export interface LoginRequest {
@@ -130,4 +135,30 @@ export interface AuthContextType {
   isLoading: boolean;
   error: string | null;
   clearError: () => void;
+}
+
+export interface BookingResponse {
+  id: string;
+  requestedStart: string;
+  requestedEnd: string;
+  scheduledStart?: string;
+  scheduledEnd?: string;
+  status: 'PENDING' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+  painter?: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    rating: number;
+  };
+  address: string;
+  description?: string;
+  estimatedHours?: number;
+}
+
+export interface CreateBookingRequest {
+  requestedStart: string;
+  requestedEnd: string;
+  description?: string;
+  address: string;
+  estimatedHours?: number;
 }
