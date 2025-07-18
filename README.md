@@ -43,11 +43,21 @@ cd Adam
 cd server
 
 # Start all services (PostgreSQL, Redis, API)
+# This will automatically:
+# - Set up PostgreSQL database
+# - Run database migrations
+# - Seed initial data (user roles, sample users)
+# - Start the API server
 docker-compose up -d
 
-# Setup database
-docker exec -it painting_api yarn migrate
-docker exec -it painting_api yarn db:seed
+# Verify setup is complete
+yarn verify
+
+# Check API health
+curl http://localhost:3000/health
+```
+
+**That's it!** No manual database setup required. The system is fully automated.
 
 # Test the API
 node health-check.js
