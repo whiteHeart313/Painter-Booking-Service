@@ -110,8 +110,9 @@ export interface SignupRequest {
   lastname: string;
   email: string;
   password: string;
-  phone?: string;
+  phone: string;
   role: 'USER' | 'PAINTER';
+  address: string;
 }
 
 export interface AuthResponse {
