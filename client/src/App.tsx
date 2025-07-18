@@ -7,6 +7,8 @@ import Services from './pages/Services';
 import BookService from './pages/BookService';
 import Booking from './pages/Booking';
 import MyBookings from './pages/MyBookings';
+import SetAvailability from './pages/SetAvailability';
+import PainterAppointments from './pages/PainterAppointments';
 import Contact from './pages/Contact';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
@@ -44,6 +46,16 @@ function App() {
                 <Route path="/bookings" element={
                   <ProtectedRoute requiredRole="USER">
                     <MyBookings />
+                  </ProtectedRoute>
+                } />
+                <Route path="/availability" element={
+                  <ProtectedRoute requiredRole="PAINTER">
+                    <SetAvailability />
+                  </ProtectedRoute>
+                } />
+                <Route path="/appointments" element={
+                  <ProtectedRoute requiredRole="PAINTER">
+                    <PainterAppointments />
                   </ProtectedRoute>
                 } />
                 <Route path="/contact" element={<Contact />} />
