@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusIcon, TrashIcon, ClockIcon } from '@heroicons/react/24/outline';
 import AvailabilityService from '../services/availabilityService';
+import { formatDateFromISO, formatTimeFromISO, combineDateAndTime } from '../utils/dateUtils';
 import type { AvailabilityData } from '../services/availabilityService';
 
 export default function SetAvailability() {
@@ -13,8 +14,7 @@ export default function SetAvailability() {
   const [newAvailability, setNewAvailability] = useState({
     date: '',
     startTime: '',
-    endTime: '',
-    isAvailable: true
+    endTime: ''
   });
 
   useEffect(() => {
@@ -51,13 +51,20 @@ export default function SetAvailability() {
       setIsSubmitting(true);
       setError(null);
       
-      const response = await AvailabilityService.createAvailability(newAvailability);
+      // Convert date and time to ISO format
+      const requestData = {
+        startTime: combineDateAndTime(newAvailability.date, newAvailability.startTime),
+        endTime: combineDateAndTime(newAvailability.date, newAvailability.endTime)
+      };
+      
+      console.log('Sending availability data:', requestData);
+      
+      const response = await AvailabilityService.createAvailability(requestData);
       setAvailabilities([...availabilities, response]);
       setNewAvailability({
         date: '',
         startTime: '',
-        endTime: '',
-        isAvailable: true
+        endTime: ''
       });
       
     } catch (err) {
@@ -78,22 +85,8 @@ export default function SetAvailability() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const formatTime = (timeString: string) => {
-    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
+  const formatDate = formatDateFromISO;
+  const formatTime = formatTimeFromISO;
 
   if (loading) {
     return (
@@ -174,19 +167,6 @@ export default function SetAvailability() {
               </div>
             </div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="isAvailable"
-                checked={newAvailability.isAvailable}
-                onChange={(e) => setNewAvailability({...newAvailability, isAvailable: e.target.checked})}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="isAvailable" className="ml-2 block text-sm text-gray-900">
-                Mark as available
-              </label>
-            </div>
-
             <div className="flex justify-end">
               <button
                 type="submit"
@@ -221,7 +201,7 @@ export default function SetAvailability() {
                     <div className="flex items-center space-x-4">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {formatDate(availability.date)}
+                          {formatDate(availability.startTime)}
                         </p>
                         <p className="text-sm text-gray-600">
                           {formatTime(availability.startTime)} - {formatTime(availability.endTime)}
@@ -230,12 +210,12 @@ export default function SetAvailability() {
                       <div>
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            availability.isAvailable
+                            !availability.isBooked
                               ? 'bg-green-100 text-green-800'
                               : 'bg-red-100 text-red-800'
                           }`}
                         >
-                          {availability.isAvailable ? 'Available' : 'Unavailable'}
+                          {!availability.isBooked ? 'Available' : 'Booked'}
                         </span>
                       </div>
                     </div>
