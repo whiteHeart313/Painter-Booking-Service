@@ -59,14 +59,11 @@ curl http://localhost:3000/health
 
 **That's it!** No manual database setup required. The system is fully automated.
 
-# Test the API
-node health-check.js
-```
-
-### **3. API Base URL**
-```
-http://localhost:3000/api
-```
+### **3. What's Running**
+- **API Server**: http://localhost:3000
+- **Database**: PostgreSQL on port 5432
+- **Redis**: Cache on port 6379
+- **Prisma Studio**: Run `yarn db:studio` to view data
 
 ## 🎯 **Key Features**
 
@@ -156,8 +153,9 @@ yarn migrate          # Run migrations
 yarn db:seed          # Seed database
 yarn db:studio        # Open Prisma Studio
 
-# Testing
+# Testing & Verification
 yarn test:api         # Run API tests
+yarn verify           # Verify complete setup
 yarn type-check       # Check TypeScript types
 
 # Utilities
@@ -192,7 +190,9 @@ curl -X POST http://localhost:3000/api/auth/register \
     "lastname": "Doe",
     "email": "john@example.com",
     "password": "password123",
-    "roleId": "USER_ROLE_ID"
+    "role": "USER",
+    "address": "123 Main St",
+    "phone": "1234567890"
   }'
 ```
 
@@ -264,13 +264,19 @@ JWT_SECRET="your-super-secret-jwt-key-change-in-production"
 
 ## 🧪 **Testing**
 
+### **Setup Verification**
+```bash
+# Verify complete setup (recommended)
+yarn verify
+
+# Manual health check
+curl http://localhost:3000/health
+```
+
 ### **API Testing**
 ```bash
 # Run comprehensive API tests
 yarn test:api
-
-# Health check
-node health-check.js
 
 # Manual testing with curl/Postman
 # See API documentation above
@@ -337,7 +343,16 @@ yarn db:seed
 
 ### **Common Issues**
 
-1. **Database Connection Error**
+1. **Setup Verification Failed**
+   ```bash
+   # Run verification to see what's wrong
+   yarn verify
+   
+   # Restart all services
+   docker-compose down && docker-compose up -d
+   ```
+
+2. **Database Connection Error**
    ```bash
    # Check if PostgreSQL is running
    docker-compose ps
@@ -346,19 +361,22 @@ yarn db:seed
    docker-compose restart postgres
    ```
 
-2. **Port Already in Use**
+3. **Port Already in Use**
    ```bash
    # Find and kill process using port 3000
    lsof -ti:3000 | xargs kill -9
+   
+   # Or on Windows
+   netstat -ano | findstr :3000
+   taskkill /PID <process_id> /F
    ```
 
-3. **Migration Issues**
+4. **Migration Issues**
    ```bash
-   # Reset database
-   yarn migrate:reset
-   
-   # Re-run migrations
-   yarn migrate
+   # Reset database and start fresh
+   docker-compose down -v
+   docker-compose up -d
+   yarn verify
    ```
 
 ## 📞 **Support**
