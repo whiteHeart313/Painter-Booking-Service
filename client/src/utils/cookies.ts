@@ -2,9 +2,11 @@ import Cookies from 'js-cookie';
 
 // Cookie utility functions using js-cookie
 export const setCookie = (name: string, value: string, days: number = 7) => {
+  const isProduction = import.meta.env.PROD;
+  
   Cookies.set(name, value, { 
     expires: days,
-    secure: true,
+    secure: isProduction, // Only secure in production
     sameSite: 'lax'
   });
 };
