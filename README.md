@@ -247,7 +247,6 @@ src/
 ### **Required Variables**
 ```env
 DATABASE_URL="postgresql://admin:password123@localhost:5432/painting_service"
-REDIS_URL="redis://localhost:6379"
 NODE_ENV="development"
 PORT=3000
 JWT_SECRET="your-super-secret-jwt-key-change-in-production"
