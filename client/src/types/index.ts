@@ -94,7 +94,7 @@ export interface User {
   name: string;
   email: string;
   phone?: string;
-  role: 'customer' | 'admin';
+  role: 'CLIENT' | 'PAINTER';
   avatar?: string;
   createdAt: string;
   updatedAt: string;
