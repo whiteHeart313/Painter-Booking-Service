@@ -20,7 +20,16 @@ Adam/
 │   │   └── utils/       # Utilities (JWT, logger, validation)
 │   ├── prisma/          # Database schema and migrations
 │   └── docker-compose.yml
-├── client/              # Frontend (Coming Soon)
+├── client/              # Frontend (React + TypeScript)
+│   ├── src/
+│   │   ├── components/  # Reusable UI components
+│   │   ├── pages/       # Page components
+│   │   ├── services/    # API service functions
+│   │   ├── contexts/    # React contexts (Auth, etc.)
+│   │   ├── utils/       # Utilities and helpers
+│   │   └── hooks/       # Custom React hooks
+│   ├── public/          # Static assets
+│   └── package.json
 └── README.md           # This file
 ```
 
@@ -57,10 +66,25 @@ yarn verify
 curl http://localhost:3000/health
 ```
 
+### **3. Start the Frontend**
+```bash
+# Navigate to client directory
+cd client
+
+# Install dependencies
+yarn install
+
+# Start development server
+yarn  dev
+
+# Frontend will be available at http://localhost:5173
+```
+
 **That's it!** No manual database setup required. The system is fully automated.
 
 ### **3. What's Running**
 - **API Server**: http://localhost:3000
+- **Frontend**: http://localhost:5173 (when running)
 - **Database**: PostgreSQL on port 5432
 - **Redis**: Cache on port 6379
 - **Prisma Studio**: Run `yarn db:studio` to view data
@@ -90,6 +114,15 @@ curl http://localhost:3000/health
 - Automatic painter assignment
 - Status tracking (PENDING, CONFIRMED, COMPLETED, etc.)
 - Booking history and management
+
+### **🎨 Frontend Features**
+- **Modern React App** - Built with TypeScript and Vite
+- **Responsive Design** - Tailwind CSS for mobile-first design
+- **Role-Based UI** - Different interfaces for USER and PAINTER roles
+- **Authentication** - JWT-based login/register with protected routes
+- **User Dashboard** - Book services, view booking history
+- **Painter Dashboard** - Set availability, manage appointments
+
 
 ### **🛡️ Security & Quality**
 - Input validation with Joi
@@ -141,7 +174,26 @@ yarn db:seed
 yarn db:studio
 ```
 
+### **Frontend Development**
+```bash
+cd client
+
+# Install dependencies
+yarn install
+
+# Start development server
+yarb  dev
+
+# Build for production
+yarb  build
+
+# Preview production build
+yarb  preview
+```
+
 ### **Available Scripts**
+
+#### **Backend (server/)**
 ```bash
 # Development
 yarn dev              # Start development server
@@ -161,6 +213,16 @@ yarn type-check       # Check TypeScript types
 # Utilities
 yarn clean            # Clean build artifacts
 yarn reset            # Clean and reinstall
+```
+
+#### **Frontend (client/)**
+```bash
+# Development
+yarn dev           # Start development server
+yarn build         # Build for production
+yarn preview       # Preview production build
+
+
 ```
 
 ## 📚 **API Documentation**
@@ -254,12 +316,17 @@ src/
 
 ## 📝 **Environment Variables**
 
-### **Required Variables**
+### **Backend Variables (server/.env)**
 ```env
 DATABASE_URL="postgresql://admin:password123@localhost:5432/painting_service"
 NODE_ENV="development"
 PORT=3000
 JWT_SECRET="your-super-secret-jwt-key-change-in-production"
+```
+
+### **Frontend Variables (client/.env)**
+```env
+API_ENDPOINT="http://localhost:3000"
 ```
 
 ## 🧪 **Testing**
@@ -332,11 +399,14 @@ yarn db:seed
 - [x] Rating and selection algorithm
 - [x] Alternative slot recommendations
 
-### **Phase 2: Frontend (Coming Soon)**
-- [x] React frontend
-- [x] User Booked Slots 
-- [ ] Painter Availability 
-- [x] Booking management interface
+### **Phase 2: Frontend** ✅
+- [x] React frontend with TypeScript
+- [x] User authentication and registration
+- [x] USER role: Book services, view bookings
+- [x] PAINTER role: Set availability, manage appointments
+- [x] Responsive design with Tailwind CSS
+- [x] Role-based navigation and access control
+- [x] API integration with authentication tokens
 
 
 ## 🐛 **Troubleshooting**
