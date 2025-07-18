@@ -18,30 +18,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Initialize auth state on mount
   useEffect(() => {
     const initializeAuth = async () => {
-      console.log('🔍 AuthContext: Starting initializeAuth...');
       try {
         const storedToken = AuthService.getToken();
-        console.log('🔍 AuthContext: Retrieved token from storage:', storedToken ? 'Token exists' : 'No token found');
-        
         if (storedToken) {
-          console.log('🔍 AuthContext: Setting token in state');
           setToken(storedToken);
-          
-          console.log('🔍 AuthContext: Fetching current user...');
           const currentUser = await AuthService.getCurrentUser();
-          console.log('🔍 AuthContext: Current user fetched:', currentUser);
-          
           setUser(currentUser);
-          console.log('🔍 AuthContext: User set in state, authentication complete');
-        } else {
-          console.log('🔍 AuthContext: No stored token, user not authenticated');
         }
       } catch (error) {
-        console.error('🔍 AuthContext: Failed to initialize auth:', error);
+        console.error('Failed to initialize auth:', error);
         // Clear invalid tokens
         await AuthService.logout();
       } finally {
-        console.log('🔍 AuthContext: Setting loading to false');
         setIsLoading(false);
       }
     };
@@ -50,22 +38,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (credentials: LoginRequest) => {
-    console.log('🔍 AuthContext: Login attempt started');
     try {
       setIsLoading(true);
       setError(null);
-      
-      console.log('🔍 AuthContext: Calling AuthService.login');
       const response = await AuthService.login(credentials);
-      console.log('🔍 AuthContext: Login response received:', response);
-      
-      console.log('🔍 AuthContext: Setting user and token in state');
       setUser(response.user);
       setToken(response.token);
-      
-      console.log('🔍 AuthContext: Login successful, user authenticated');
     } catch (error) {
-      console.error('🔍 AuthContext: Login failed:', error);
+      console.error('Login failed:', error);
       setError(error instanceof Error ? error.message : 'Login failed');
       throw error;
     } finally {
