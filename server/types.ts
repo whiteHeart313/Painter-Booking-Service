@@ -132,7 +132,7 @@ export interface RegisterRequest {
   lastname: string;
   email: string;
   password: string;
-  roleId: string;
+  role: 'USER' | 'PAINTER';
   address?: string;
   phone?: string;
 }
