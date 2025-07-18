@@ -14,18 +14,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   redirectTo = '/',
 }) => {
   const { user, isAuthenticated, isLoading } = useAuth();
-  
-  console.log('🔍 ProtectedRoute: Checking access...');
-  console.log('🔍 ProtectedRoute: isLoading:', isLoading);
-  console.log('🔍 ProtectedRoute: isAuthenticated:', isAuthenticated);
-  console.log('🔍 ProtectedRoute: user:', user);
-  console.log('🔍 ProtectedRoute: requiredRole:', requiredRole);
-  console.log('🔍 ProtectedRoute: user role:', user?.role);
-  
   const location = useLocation();
+  
   // Show loading spinner while checking authentication
   if (isLoading) {
-    console.log('🔍 ProtectedRoute: Still loading, showing spinner');
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -38,13 +30,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    console.log('🔍 ProtectedRoute: User is not authenticated, redirecting to login');
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
   }
 
   // Check role if specified
   if (requiredRole && user?.role.name !== requiredRole) {
-    console.log('🔍 ProtectedRoute: Role mismatch - required:', requiredRole, 'user has:', user?.role.name);
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -63,7 +53,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  console.log('🔍 ProtectedRoute: Access granted, rendering children');
   return <>{children}</>;
 };
 
