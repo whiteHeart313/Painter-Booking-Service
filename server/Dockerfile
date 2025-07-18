@@ -20,4 +20,5 @@ RUN yarn build
 
 EXPOSE 3000
 
-CMD ["yarn", "serve"]
+# Run migrations on startup and then start the server
+CMD ["sh", "-c", "yarn migrate:deploy && yarn serve"]
