@@ -94,18 +94,30 @@ The application uses the following main entities:
 ### Running with Docker (Recommended)
 
 1. Clone the repository
-2. Create a `.env` file with your configuration (see `.env.example`)
-3. Start the application:
+2. Start the application:
 
 ```bash
 docker-compose up -d
 ```
 
-This will start:
+This will automatically:
+- Start PostgreSQL database on port 5432
+- Start Redis for caching on port 6379
+- Run database migrations (create all tables)
+- Seed initial data (user roles, sample users)
+- Start API server on port 3000
 
-- PostgreSQL database on port 5432
-- Redis for caching on port 6379
-- API server on port 3000
+3. Verify everything is working:
+
+```bash
+# Run verification script
+yarn verify
+
+# Or manually check health
+curl http://localhost:3000/health
+```
+
+**No manual database setup required!** Everything is automated.
 
 ### Running Locally
 
