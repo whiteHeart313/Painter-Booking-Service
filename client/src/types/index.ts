@@ -91,7 +91,8 @@ export interface ContactForm {
 
 export interface User {
   id: string;
-  name: string;
+  firstname: string;
+  lastname: string;
   email: string;
   phone?: string;
   role:Role;
