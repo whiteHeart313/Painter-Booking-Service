@@ -7,6 +7,9 @@ const router = Router();
 // Get handlers from container
 const { booking: bookingHandler } = container.handlers;
 
+console.log('Booking routes loaded, handler:', !!bookingHandler);
+console.log('Handler methods:', Object.getOwnPropertyNames(bookingHandler));
+
 // User routes
 router.post(
   '/booking-request',
@@ -29,5 +32,7 @@ router.get(
   requireRole(['PAINTER']),
   bookingHandler.getMyAppointments
 );
+
+console.log('Booking routes registered successfully');
 
 export default router;

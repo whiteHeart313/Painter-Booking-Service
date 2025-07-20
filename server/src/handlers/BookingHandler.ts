@@ -64,6 +64,7 @@ export class BookingHandler extends BaseHandler {
   };
 
   getMyAppointments = async (req: Request, res: Response): Promise<void> => {
+    console.log('Fetching my appointments');
     try {
       // Check if user is authenticated and has painter profile
       if (!req.user?.painterProfile) {
